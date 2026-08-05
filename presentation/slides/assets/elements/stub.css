@@ -1,0 +1,52 @@
+/* ============ stub (.stub): redacted-content stand-in ============
+   Snippet (inside a bubble, in place of the text; timestamp stays the
+   bubble's normal .meta line):
+     <div class="bubble"><span class="sender p8">A watched channel</span>
+       <div class="stub"><i></i><i></i><i></i></div>
+       <span class="meta">20:31</span>
+     </div>
+
+   Source: none. An invented device (like the ghost bubble): it stands in
+   for a message whose content the deck cannot or will not show, as two
+   thin placeholder text rows and an outlined picture glyph, drawn directly
+   on the bubble surface in the --scene-row ink. No frame, no media chrome:
+   the message stays an ordinary bubble with an ordinary timestamp; only
+   its content is a stand-in.
+
+   Exactly 3 <i> children: text row, text row, picture glyph. The glyph
+   sits LEFT, filling the stub's full height under the sender line at a
+   fixed 5:4 shape, its inner shapes proportional; the two rows stack to
+   its right, vertically centered; the bubble's .meta corner stays clear.
+   The stub stretches (e.g. flexed inside a .cols.split.level branch) and
+   reads at any height from its 30px minimum up.
+
+   Sizing is in container-query units (the stub is its own size
+   container), with a px fallback: both glyph axes are stated outright.
+   Never size it with aspect-ratio transfer from a stretched axis: Firefox
+   does not transfer the stretched size, and the glyph collapses to a
+   borders-only dot. */
+
+.stub { position: relative; container-type: size; min-height: 30px; margin-top: 6px; }
+.stub i { position: absolute; display: block; background: var(--scene-row); border-radius: 4px; }
+.stub i:nth-child(1) {
+  top: calc(50% - 12px); width: 52%; height: 7px;
+  left: 68px; left: calc(125cqh + 18px);
+}
+.stub i:nth-child(2) {
+  top: calc(50% + 5px); width: 38%; height: 7px;
+  left: 68px; left: calc(125cqh + 18px);
+}
+.stub i:nth-child(3) { /* picture glyph: full stub height, 5:4 */
+  left: 0; top: 0; background: none;
+  width: 50px; height: 100%;
+  width: 125cqh; height: 100cqh;
+  border: 3px solid var(--scene-row); border-radius: 8px; overflow: hidden;
+}
+.stub i:nth-child(3)::before { /* its sun */
+  content: ""; position: absolute; left: 13%; top: 13%; width: 20%; aspect-ratio: 1;
+  border: 2px solid var(--scene-row); border-radius: 50%;
+}
+.stub i:nth-child(3)::after { /* its ridge, low in the frame */
+  content: ""; position: absolute; right: -18%; bottom: -45%; width: 66%; aspect-ratio: 1;
+  border: 3px solid var(--scene-row); border-radius: 14%; transform: rotate(45deg);
+}

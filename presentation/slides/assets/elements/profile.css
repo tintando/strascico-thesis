@@ -1,0 +1,69 @@
+/* ============ profile: channel info sidebar (a scalar inventory) ============
+   Snippet:
+     <div class="sbody with-profile">
+       <div class="thread">…messages…</div>
+       <aside class="profile">
+         <div class="who">
+           <span class="av">TG</span>
+           <b>TGDataset2</b>
+           <span class="sub">12,065 channels</span>
+         </div>
+         <div class="field">
+           <span class="v">Free-text description block.</span>
+           <span class="k">Description</span>
+         </div>
+         <div class="counts">
+           <div class="mrow"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>
+             <span><b>108.8 M</b> photos</span></div>
+           <div class="mrow acc-ghost"><svg …/><span><b>2.42 M</b> detected deletions</span></div>
+         </div>
+       </aside>
+     </div>
+
+   Source: composition mirrors tdesktop's third-column info panel
+   (Info::Profile): centered round avatar, channel name, subscriber-count
+   line, a value + gray-caption field (the real panel's link/Description
+   rows), then the shared-media section: one row per media type, outline
+   icon left, "count label" text (lng_profile_photos "%1 photos" and
+   siblings). Pane sits on windowBg (--raised) behind a hairline, like the
+   real third column against the chat. Icons are 24px outline strokes in
+   currentColor; rows tagged acc-ghost / acc-teal / acc-amber / acc-blue
+   tint the icon with the deck's semantic accents (deviation: the deck
+   legend; the real panel's icons are all muted gray). Metrics are the
+   deck's (2x real client). Layout helper: put `.with-profile` on the
+   slide's .sbody to split it into a thread column + a flush right pane. */
+
+.sbody.with-profile { padding: 0; gap: 0; grid-template-columns: minmax(0, 1fr) 400px; align-content: stretch; }
+.with-profile > .thread { padding: 36px 44px; align-self: center; width: 100%; min-width: 0; }
+/* the thread carries its own padding here, so it needs the 4:3 trim that
+   .sbody gets in deck.css: the narrower column wraps messages into more lines.
+   The body itself must keep its zero padding, or deck.css's 4:3 rule wins on
+   specificity and drops the whole split (profile pane included) 24px below the
+   header, where the pane is meant to run flush from header to slide bottom */
+html[data-ratio="43"] .sbody.with-profile { padding-top: 0; }
+html[data-ratio="43"] .with-profile > .thread { padding-top: 24px; padding-bottom: 24px; }
+
+.profile {
+  background: var(--raised); border-left: 1px solid var(--line);
+  padding: 18px 26px 16px; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center; gap: 12px;
+}
+.profile .who { display: grid; justify-items: center; gap: 3px; text-align: center; }
+.profile .who .av {
+  width: 58px; height: 58px; border-radius: 50%; background: var(--own);
+  display: grid; place-items: center; margin-bottom: 5px;
+  font-family: var(--mono); font-size: 22px; font-weight: 500;
+}
+.profile .who b { font-size: 23px; font-weight: 600; line-height: 1.2; }
+.profile .who .sub { font-size: 16px; color: var(--ink-2); }
+.profile .field { border-top: 1px solid var(--line); padding-top: 10px; display: grid; gap: 1px; }
+.profile .field .v { font-size: 16.5px; line-height: 1.35; }
+.profile .field .k { font-size: 14px; color: var(--ink-2); }
+.profile .counts { border-top: 1px solid var(--line); padding-top: 11px; display: grid; gap: 8px; align-content: start; }
+.profile .mrow { display: flex; align-items: center; gap: 14px; font-size: 17.5px; line-height: 1.25; }
+.profile .mrow svg { width: 21px; height: 21px; flex: none; color: var(--ink-2); fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.profile .mrow b { font-family: var(--mono); font-weight: 500; }
+.profile .mrow.acc-ghost svg { color: var(--ghost); }
+.profile .mrow.acc-teal  svg { color: var(--teal); }
+.profile .mrow.acc-amber svg { color: var(--amber); }
+.profile .mrow.acc-blue  svg { color: var(--blue); }

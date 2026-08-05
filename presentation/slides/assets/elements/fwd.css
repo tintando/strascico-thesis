@@ -1,0 +1,16 @@
+/* ============ fwd: "Forwarded from …" header inside a bubble ============
+   Snippet:
+     <div class="bubble">
+       <span class="fwd">Forwarded from <b>the source channel</b></span>
+       …message text. <span class="meta">14:05</span>
+     </div>
+
+   Source: msgInServiceFg #71BAFA night (tdesktop v6.3.10) / #168ACD day
+   (lib_ui@2d3c80e, = windowActiveTextFg): "inbox message information text
+   (like information about a forwarded message original sender)" (--service-in).
+   String "Forwarded from {user}" = lng_forwarded in lang.strings; the real
+   client keeps label and name on ONE line when the bubble is wide enough
+   (it wraps as ordinary text), so the name is inline, not a block. */
+
+.fwd { display: block; color: var(--service-in); font-size: 20px; margin-bottom: 4px; }
+.fwd b { font-weight: 600; }

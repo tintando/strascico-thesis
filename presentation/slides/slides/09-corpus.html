@@ -1,0 +1,76 @@
+<!-- ============ 9 · THE CORPUS ============ -->
+<section class="slide" data-title="The corpus" data-summary="474.9 M messages">
+  <div class="shead">
+    <span class="av">TG</span>
+    <div class="ch">
+      <span class="t">The <em>corpus</em></span>
+      <span class="sub">12,065 channels · Sep 2015 – Jun 2026</span>
+    </div>
+    <span class="visit">visit 9 of 16</span>
+  </div>
+  <div class="sbody with-profile">
+    <div class="thread">
+      <div class="poll" style="width:520px">
+        <span class="sender p4">Corpus</span>
+        <div class="q">Where the messages live</div>
+        <div class="cap">474.9 M messages</div>
+        <div class="opt"><span class="pct">70%</span><span>comment sections</span><span class="n">333.2 M</span>
+          <div class="bar"><i style="width:70.2%"></i></div></div>
+        <div class="opt"><span class="pct">30%</span><span>broadcast channels</span><span class="n">141.8 M</span>
+          <div class="bar"><i style="width:29.9%"></i></div></div>
+        <div class="comments">
+          <span class="cavs"><span class="cav p7">K</span><span class="cav p6">M</span><span class="cav p8">D</span></span>
+          <span class="clabel">13 comments</span>
+          <span class="cchev"></span>
+        </div>
+      </div>
+      <div class="bubble own">The comment side outweighs all broadcasts, and gets the <b>same treatment</b>: revisited and diffed like every post.
+        <span class="meta">20:52</span>
+      </div>
+    </div>
+    <aside class="profile">
+      <div class="who">
+        <span class="av">TG</span>
+        <b>TGDataset2</b>
+        <span class="sub">12,065 channels · 474.9 M messages</span>
+      </div>
+      <div class="field">
+        <span class="v">Public channels and their comment sections, revisited and diffed. Text and metadata: no media mirrored, except profile pictures.</span>
+        <span class="k">Description</span>
+      </div>
+      <div class="counts">
+        <div class="mrow"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span><b>116.8 M</b> messages with reactions</span></div>
+        <div class="mrow"><svg viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          <span><b>323 K</b> polls</span></div>
+        <div class="mrow"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span><b>11,165</b> unique channel pictures</span></div>
+      </div>
+      <div class="counts">
+        <div class="mrow acc-ghost"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-dasharray="3 3"/></svg>
+          <span><b>2.42 M</b> detected deletions</span></div>
+        <div class="mrow acc-teal"><svg viewBox="0 0 24 24"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          <span><b>36,016</b> diffed edits</span></div>
+        <div class="mrow acc-amber"><svg viewBox="0 0 24 24"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <span><b>18.7 M</b> restriction flags</span></div>
+        <div class="mrow acc-blue"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <span><b>37,669</b> metadata snapshots</span></div>
+      </div>
+      <div class="counts">
+        <div class="mrow"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H3a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+          <span><b>456 K</b> channels referenced</span></div>
+      </div>
+    </aside>
+  </div>
+  <aside class="notes">
+    Everything so far was the machine. This is its output: a corpus of public
+    channels, and on top of it the change layers no snapshot has: detected
+    deletions, edits with the text before and after, changing restriction flags
+    and a channel metadata snapshot at every visit. And note the poll: most of
+    the corpus is not channel posts but comments. Telegram builds comments
+    sideways: behind the channel sits a hidden discussion group, a separate chat
+    altogether; every post is forwarded there automatically, and its replies are
+    the comments. The scraper recurses into that group, so the comment side gets
+    exactly the same treatment.
+  </aside>
+</section>

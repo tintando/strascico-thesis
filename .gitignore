@@ -1,0 +1,49 @@
+# --- thesis: LaTeX build output ---------------------------------------------
+thesis/build/
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.idx
+*.ind
+*.ilg
+*.xdv
+*.synctex.gz
+# thesis.pdf is a deliverable, so it stays tracked
+!thesis/thesis.pdf
+# Source PDFs are figures, not build products
+!thesis/sapienzalogo.pdf
+!thesis/figures/**/*.pdf
+
+# --- analysis ----------------------------------------------------------------
+analysis/output/
+analysis/**/_cache/
+.ipynb_checkpoints/
+.venv/
+__pycache__/
+*.pyc
+
+# --- presentation ------------------------------------------------------------
+# The static site is a build product; regenerate it with deploy/build.mjs
+presentation/dist/
+presentation/deploy/node_modules/
+presentation/deploy/.env
+# Tunnel credentials; config.yml ships with placeholders
+presentation/deploy/cloudflared/credentials.json
+# Upstream Telegram sources, if cloned locally for reference
+presentation/reference/
+
+# --- OS noise ----------------------------------------------------------------
+.DS_Store
+Thumbs.db
+~$*

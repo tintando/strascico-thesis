@@ -1,0 +1,137 @@
+\chapter{Background and Related Work}
+\label{chap:background}
+
+This chapter provides the context for our work. We begin with an overview of Telegram as a platform, then outline the research phenomena that make it a consequential subject of study, and finally survey prior efforts to build Telegram datasets.
+
+%----------------------------------------------------------------------
+\section{Telegram as a Platform}
+\label{sec:telegram-platform}
+%----------------------------------------------------------------------
+
+Telegram is a cloud-based instant messaging application founded in 2013 by brothers Nikolai and Pavel Durov~\cite{telegram2026}.
+Originally conceived as a privacy-oriented alternative to mainstream messaging services, the platform has grown rapidly: it surpassed 400~million monthly active users (MAU) in April~2020, reached 900~million MAU by March~2024, and crossed the one-billion-MAU threshold in March~2025~\cite{telegramstats2025}.
+This trajectory makes Telegram one of the most widely used communication platforms in the world, trailing only WhatsApp (3~billion MAU~\cite{whatsapp2025}) and WeChat (1.41~billion MAU~\cite{wechat2025}).
+
+Telegram's architecture distinguishes between several communication primitives~\cite{telegramfaq}.
+\emph{Private chats} (one-to-one) and \emph{group chats} (up to 200\,000 members) support bidirectional messaging~\cite{telegramfaq}.
+\emph{Channels}, by contrast, are broadcast-only spaces where a small set of administrators publish posts that are delivered to an unlimited number of subscribers~\cite{telegramchannels}.
+Channels are the primary unit of analysis in our work: they function as one-to-many broadcasting media, much like public social-media feeds, while remaining indexed by a stable numeric identifier and an optional public username.
+A channel can additionally be associated with a \emph{linked discussion group}, which turns each broadcast post into a comment thread~\cite{telegramdiscussion}.
+
+%----------------------------------------------------------------------
+\section{Why Telegram Warrants Study}
+\label{sec:why-telegram}
+%----------------------------------------------------------------------
+
+Telegram's research importance follows first from its sheer reach.
+Since crossing the one-billion-MAU threshold in March~2025~\cite{telegramstats2025}, Telegram has joined the small set of platforms that reach a meaningful fraction of the world's Internet users.
+Despite this reach, it remains markedly under-studied relative to X~(formerly Twitter), Reddit, or Facebook~\cite{propaganda2025}.
+The asymmetry between the platform's cultural and political weight and its empirical coverage motivates sustained corpus-building and observational work on Telegram.
+
+Beyond scale, Telegram has become a venue for phenomena that matter to political, social, and security research.
+It has carried communication around major elections, most recently the 2024~U.S.\ Presidential race~\cite{blas2025}, and functioned as a primary information channel during the Russo-Ukrainian war for both state-aligned media and wartime narratives~\cite{hanley2024,kloo2024}.
+In authoritarian contexts it has hosted protest coordination and drawn targeted bans, notably in Iran and Russia~\cite{akbari2019}, and its performance and perception as a political actor in such settings has itself drawn scholarly scrutiny~\cite{wijermars2022}.
+The platform has also absorbed communities displaced from mainstream networks: studies of extreme Internet celebrities and far-right actors document a migration to Telegram coincident with enforcement waves elsewhere~\cite{rogers2020,urman2022}, and subsequent work has characterised the resulting far-right, fringe, and U.S.\ extremist ecosystems, including the circulation of QAnon and COVID-era conspiracy theories~\cite{bovet2022,hoseini2024,walther2021}.
+
+These dynamics are enabled, and made legible, by two features of the platform itself.
+First, Telegram has historically applied minimal content moderation compared with platforms such as X or Facebook, which concentrates problematic content in measurable quantities: roughly 7.5\% of English-language channels in TGDataset were involved in carding and roughly 5\% promoted extremist ideologies~\cite{lamorgia2025}, and a recent corpus has shown how moderation actions interact with propaganda channels~\cite{propaganda2025}.
+The status of this permissive posture is itself now an open question following the August~2024 arrest of Pavel Durov in France on charges of complicity in illicit content facilitated by Telegram~\cite{durov2024}.
+Second, and in partial tension with that governance picture, Telegram is unusually tractable to study at scale: public channel content is accessible without membership through the Telegram API, lowering the data-collection barrier relative to end-to-end-encrypted alternatives such as Signal, and the forwarding mechanism (whereby a post can be re-broadcast from one channel to another while preserving a reference to the source) creates an explicit, observable information-propagation network.
+These forwarding links, together with in-text mentions and hyperlinks, form the basis of the snowball sampling strategy we describe in Chapter~\ref{chap:methodology}.
+
+%----------------------------------------------------------------------
+\section{Telegram Datasets}
+\label{sec:telegram-datasets}
+%----------------------------------------------------------------------
+
+Research on Telegram has produced a small but growing set of publicly available corpora that differ markedly in scale, scope, and crawling strategy.
+We review the principal datasets below, organised roughly by scale and thematic focus.
+
+\paragraph{Pushshift Telegram Dataset.}
+Baumgartner et al.~\cite{baumgartner2020} published the first large-scale Telegram corpus, containing approximately 27\,800 channels and 317~million messages from 2.2~million users.
+The dataset was seeded from 261~channels (124~related to right-wing extremism and 137~to cryptocurrency) and expanded through a forward-based crawl.
+Alongside the data, the authors released the collection source code, enabling other researchers to deploy independent scraping instances.
+The Pushshift dataset has been widely reused, for example to study the UK far-right network on Telegram~\cite{bovet2022} and information propagation in fringe communities~\cite{hoseini2024}.
+
+\paragraph{TGDataset.}
+La~Morgia et al.~\cite{lamorgia2025} presented the TGDataset, which, at over 120\,000 channels and 498~million messages, was at the time of its publication the largest general-purpose Telegram channel collection released.
+The authors seeded their crawl with 180~channels drawn from TGStat (the ten most popular channels in each of 18~categories) and expanded iteratively via forward-based snowball sampling over an 18-month collection period (January~2021 to July~2022).
+They performed language detection across the full corpus and applied LDA topic modelling to the English-language subset, identifying 13~topics.
+Among their findings, religion was the largest topic cluster (24\%), followed by U.S.\ news (15\%), while 7.5\% of English-language channels were involved in carding (stolen credit card services) and roughly 5\% promoted extremist ideologies.
+The TGDataset schema (Table~2 of the paper) is deliberately narrow: each message stores text, date, author, a forwarded-from reference, and (for media) a file identifier and extension, with channel-level fields capturing only a single snapshot of title, username, description, subscriber count, and the \texttt{scam}/\texttt{verified} flags.
+Reactions, comment threads, replies, and per-channel temporal evolution are not retrieved; the authors flag this explicitly in their Limitation section and list ``recording channel updates'' and ``collecting replies to messages'' as future work~\cite{lamorgia2025}.
+
+\paragraph{TeraGram.}
+Golovin et al.~\cite{teragram2026} released TeraGram, which supersedes the TGDataset in scale: $711{,}782$ fully downloaded channels (alongside $10{,}060$ groups, of which $4{,}017$ are linked discussion groups) and roughly $5.9$~billion messages spanning September~2015 to November~2025.
+Like the present work, and unlike the earlier corpora, TeraGram stores its data in a structured relational form rather than as serialized \texttt{Message} blobs, exposes the engagement surface (reactions, views, forwards, replies, and polls) as queryable fields, and recurses into linked discussion groups to capture subscriber comments.
+It is, however, a single-snapshot collection: each chat is downloaded once and not revisited, so it records neither longitudinal channel-metadata evolution, message edits, nor deletions.
+
+\paragraph{Blas et al.\ U.S.\ Election Dataset.}
+Blas, Luceri, and Ferrara~\cite{blas2025} compiled a topically focused dataset of over 43\,000 chats and more than one billion messages centered on the 2024~U.S.\ Presidential Election.
+Their collection ran in two phases over August to October 2024, first discovering and scraping new chats and then continuously updating already-discovered chats with newly posted messages~\cite{blas2025}; channels are thus revisited to extend their message history, though channel-metadata evolution, edits, and deletions are not tracked across visits.
+Unlike the other corpora considered here, their unit of collection is the Telegram \texttt{Chat} supertype: the released ``chats'' encompass both group chats and broadcast channels (their Terminology paragraph states explicitly that ``chat'' is used to refer to both chats and channels~\cite{blas2025}), and the schema includes a dedicated \texttt{participants} table of user objects, reflecting the group-chat content where many users post rather than the channel content where a small set of administrators broadcast.
+The dataset also includes chat details, profile pictures, and messages, and the authors demonstrated application scenarios such as inter-community network construction and detection of mobilization-related harmful content.
+Each row in the \texttt{messages} table stores the full Telethon \texttt{Message} object as a zlib-compressed, JSON-serialized blob~\cite{blas2025}: engagement fields such as reactions, views, forward counts, replies, and poll content are therefore preserved in the raw JSON, but they are not exposed as structured columns and require per-row deserialization for any field-level analysis.
+While this is the largest single Telegram corpus by message count, its scope is deliberately limited to a specific political event and to a unit of collection (chats and channels jointly) that differs from the channel-focused framing of our work.
+
+\paragraph{Other domain-specific datasets.}
+A number of smaller, thematically targeted datasets have also been constructed.
+Hanley and Durumeric~\cite{hanley2024} built a multilingual corpus tracking Russian media outlets on Telegram during the Russo-Ukrainian conflict.
+Kloo, Cruickshank, and Carley~\cite{kloo2024} assembled a cross-platform dataset comparing Nazi-related narratives on X and Telegram during the 2022 Russian invasion of Ukraine.
+Most recently, a dataset of propaganda messages was introduced by Kireev et al.~\cite{propaganda2025}, who combined both the export API and the real-time API to capture messages that were subsequently deleted by moderators, a feature absent from most historical datasets; the dataset itself stores messages in the standard Telethon representation and is limited to 13 channels, with no longitudinal channel metadata or recursive collection of the comment threads attached to broadcast posts.
+
+\paragraph{Positioning of our work.}
+Tables~\ref{tab:dataset-comparison} and~\ref{tab:dataset-richness} summarize the key differences among the datasets discussed above.
+By channel count, ours is the smallest of the general-purpose collections, an order of magnitude smaller than TGDataset and nearly two orders of magnitude smaller than the concurrent TeraGram. The design instead concentrates collection on per-channel richness, revisiting each channel over time and recursing into its discussion group rather than visiting a larger set of channels once. The more consequential difference, however, is temporal. No general-purpose corpus, prior or concurrent, revisits its channels, and the two topically focused datasets re-observe theirs only narrowly; none maintains the longitudinal metadata snapshots and per-message edit history that repeated visits make possible. What distinguishes our collection from those surveyed above is not any single one of the following capabilities:
+
+\begin{itemize}
+  \item \textbf{Longitudinal channel metadata.} We maintain metadata snapshots (one per channel per visit), enabling the study of how channel properties such as subscriber counts, descriptions, and verification flags evolve over time.
+  \item \textbf{Edit and deletion tracking.} We track message edits and deletions at the individual-message level, preserving a full edit history and flagging removed content (Kireev et al.\ detect deletions but do not track edits, and their approach is limited to 13 channels).
+  \item \textbf{Structured engagement surface.} We capture the platform's full engagement surface as structured, queryable fields rather than as opaque JSON blobs: per-emoji reaction counts, view and forward counters, reply counts, threading and album-grouping identifiers, the forwarded-from source channel and original date, and the full content and tallies of polls (in a dedicated \texttt{polls} table).
+  \item \textbf{Recursive comment collection.} We recursively scrape the linked discussion groups that host the comment threads attached to broadcast posts, so subscriber-posted comments are stored as first-class messages in the same schema and can be joined to their parent post via the standard \texttt{reply\_to} fields.
+\end{itemize}
+
+Our contribution is therefore the combination: a structured engagement-and-comment surface on par with TeraGram's, captured longitudinally across repeated visits, which together make the dataset suitable not only for cross-sectional analysis but for temporal studies of channel evolution, content volatility, moderation, and audience interaction that no other general-purpose corpus can directly support.
+
+\begin{table}[htbp]
+\centering
+\caption[Scale and temporal coverage of public Telegram datasets.]{Scale, scope, and temporal coverage of publicly available Telegram channel datasets. ``Long.''~marks longitudinal channel-metadata snapshots; ``Edits''~marks explicit edit-history tracking beyond a single \texttt{edit\_date} timestamp; ``Del.''~marks deletion tracking.}
+\label{tab:dataset-comparison}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrlccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{Channels} & \textbf{Messages} & \textbf{Scope} & \textbf{Long.} & \textbf{Edits} & \textbf{Del.} \\
+\midrule
+Pushshift~\cite{baumgartner2020}          & 27\,800      & 317\,M       & General        & No  & No  & No  \\
+TGDataset~\cite{lamorgia2025}             & 120\,979     & 498\,M       & General        & No  & No  & No  \\
+TeraGram~\cite{teragram2026}              & 711\,782     & 5.9\,B       & General        & No  & No  & No  \\
+Blas et al.~\cite{blas2025}               & 43\,000      & 1\,B         & U.S.\ Election & No  & No  & No  \\
+Kireev et al.~\cite{propaganda2025}       & 13           & 17.3\,M      & Propaganda     & No  & No  & Yes \\
+\textbf{Ours}                              & 12\,065      & 475\,M       & General        & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Per-message data captured by publicly available Telegram channel datasets.}
+\label{tab:dataset-richness}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Dataset} & \textbf{React.} & \textbf{Views} & \textbf{Fwd.} & \textbf{Replies} & \textbf{Comm.} & \textbf{Polls} \\
+\midrule
+Pushshift~\cite{baumgartner2020}      & No  & raw & raw & raw & No & raw \\
+TGDataset~\cite{lamorgia2025}         & No  & No  & Yes & No  & No  & No  \\
+TeraGram~\cite{teragram2026}          & Yes & Yes & Yes & Yes & Yes & Yes \\
+Blas et al.~\cite{blas2025}           & raw & raw & raw & raw & No  & raw \\
+Kireev et al.~\cite{propaganda2025}   & raw & raw & raw & raw & No  & raw \\
+\textbf{Ours}                          & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} & \textbf{Yes} \\
+\bottomrule
+\end{tabular}\par
+\medskip
+\footnotesize\emph{Yes} = exposed as a structured, queryable column in the released schema. \emph{raw} = present only inside a serialized Telethon \texttt{Message} JSON blob, requiring deserialization to access. \emph{No} = absent. ``Comm.'' covers subscriber-posted messages on broadcast posts, collected by recursively scraping the linked discussion group.
+\end{table}
+

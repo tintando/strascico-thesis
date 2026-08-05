@@ -1,0 +1,274 @@
+/* ============ tokens: tdesktop's four embedded themes ============
+   The single place to customize colors for ALL themes. Every element module
+   styles against these custom properties only; no other file holds a hex.
+
+   The four themes are Telegram Desktop's own settings cards
+   (window/themes/window_themes_embedded.cpp), verified against tdesktop
+   v6.9.3 (= the author's flatpak client) and its exact lib_ui submodule pin
+   (desktop-app/lib_ui @ 742640cb):
+   - "Tinted" (the deck default, Night Feed):
+     Telegram/Resources/night.tdesktop-theme (a zip: colors.tdesktop-theme +
+     background.png; the wallpaper is a 1x1 PNG of exactly #0E1621).
+   - "Classic": lib_ui ui/colors.palette (the default palette IS this theme).
+   - "Day":    Telegram/Resources/day-blue.tdesktop-theme, Classic with the
+     outgoing side re-tinted blue; wallpaper pixel #74B4E0.
+   - "Night":  Telegram/Resources/night-green.tdesktop-theme, the dark
+     layout re-tinted teal; wallpaper pixel #18191D.
+   Each token cites its palette key; "design value" marks a deliberate
+   deviation from it.
+
+   Integration: import this file before any element module. Set
+   data-theme="classic" | "day" | "night" on <html>; no attribute = Tinted.
+   The overrides hold in every medium, print included; the deck keeps a PDF
+   on the Tinted default by dropping the attribute in its ?print path
+   (deck.js), which an explicit ?theme= overrides so all four can be
+   exported (export-pdf.sh --all). */
+
+:root {
+  color-scheme: dark;
+  --ground: #060B11;              /* page behind the slide (design value) */
+  --slide: #0E1621;               /* chat wallpaper: night background.png pixel, sideBarBg */
+  /* wallpapers: Tinted, Night and Day ship 1x1-pixel wallpapers, so their
+     flat --slide IS the real thing. Only Classic carries an image (the
+     doodle pattern over the green gradient), applied by deck.css, not a
+     token: url() inside a custom property resolves against the document in
+     Blink, so it can't live here portably. */
+  --surface: #182533;             /* msgInBg */
+  --raised: #17212B;              /* windowBg, dialogsBg */
+  --own: #2B5278;                 /* msgOutBg, dialogsBgActive */
+  --ink: #F5F5F5;                 /* windowFg */
+  --ink-2: #708499;               /* windowSubTextFg */
+  --ink-out: #E4ECF2;             /* historyTextOutFg: own-bubble text is blue-tinted */
+  --meta-in: #6D7F8F;             /* msgInDateFg */
+  --meta-out: #7DA8D3;            /* msgOutDateFg */
+  --line: #26323E;                /* hairline (design value) */
+  --replybar: #429BDB;            /* msgInReplyBarColor */
+  --comments-link: #6AB2F2;       /* msgFileThumbLinkInFg → lightButtonFg: comments-footer label + icons */
+  --replybar-out: #65B9F4;        /* msgOutReplyBarColor: reply quote inside own bubbles */
+  --active-text: #6AB3F3;         /* windowActiveTextFg: pinned-bar title */
+  --service-in: #71BAFA;          /* msgInServiceFg: fwd headers, reaction labels */
+  --poll-bar: #3F96D0;            /* msgFileInBg: poll bars, file circles */
+  --service-bg: rgba(33, 48, 64, .835);   /* msgServiceBg #213040D5 */
+  --service-ink: #FFFFFF;         /* msgServiceFg = windowFgActive: white in
+                                     all four themes */
+  --chosen-ink: #FFFFFF;          /* historyFileInIconFg: chosen-reaction
+                                     label; white except in night-green */
+  --unread-bg: #182433;           /* historyUnreadBarBg */
+  --unread-ink: #FFFFFF;          /* historyUnreadBarFg */
+  --unread-line: transparent;     /* historyUnreadBarBorder #03080D00 */
+  --pinned-bg: #1B2734;           /* historyPinnedBg */
+
+  /* semantic accents (the deck legend): UI tier + chart-mark tier */
+  --blue: #2AABEE;  --blue-mark: #1E86C7;    /* ours / system: brand blue, design value */
+  --coral: #FF6B6B; --coral-mark: #E05252;   /* toxicity */
+  --teal: #3FB98F;  --teal-mark: #2E9E78;    /* edited */
+  --amber: #F5A623; --amber-mark: #C8821F;   /* restricted */
+  --ghost: #8494A2;                          /* deleted / absent, invented device;
+                                                design value; projector: 5.8:1 on the
+                                                night wallpaper (#52616E was 2.9:1),
+                                                still clearly muted next to --ink */
+
+  /* sender-name peer palette. Slot hues follow tdesktop's historyPeer1..8NameFg
+     (red, green, yellow, blue, purple, pink, sea, orange), but every value is a
+     design value: per theme, each slot is pushed to the OKLCH gamut's maximum
+     chroma at its hue that still holds ≥ 4.5:1 on the bubble surface (dark
+     themes additionally capped at 7.5:1 so no slot drifts fluorescent). Author
+     names are the deck's most colorful ink, by intent; regenerate with the
+     same constraints if the surfaces change. Colors are assigned per voice,
+     fixed deck-wide:
+       p1 Kireev et al., 2025 · p2 Iranian cohort · p4 Corpus (blue = ours,
+       deliberately: the corpus is our system) · p5 The News + This thesis
+       (accepted collision, 12 slides apart: the deck's widest gap) ·
+       p6 Telegram · p7 Prior corpora + Israeli cohort (accepted collision,
+       9 slides apart) · p8 A watched channel.
+     Legend-adjacent slots (p1 ≈ coral, p8 ≈ amber, p2 ≈ teal) are kept away
+     from slides where that accent carries data. */
+  --peer1: #FE4256;  /* red    4.5:1 on --surface */
+  --peer2: #11D032;  /* green  7.5:1 */
+  --peer3: #EBA80F;  /* yellow 7.5:1 (unused by the client and the deck) */
+  --peer4: #10B3FD;  /* blue   6.6:1 */
+  --peer5: #AA68FD;  /* purple 4.5:1 */
+  --peer6: #FE3689;  /* pink   4.5:1 */
+  --peer7: #12C6D8;  /* sea    7.4:1 */
+  --peer8: #FE900E;  /* orange 6.8:1 */
+
+  /* media overlays + the stylized map (location attachment) */
+  --media-capsule-bg: rgba(0, 0, 0, .55);  /* msgDateImgBg is #00000054 (.33); design
+                                              value; projector: .55 keeps the white
+                                              chip text ≥ 4.5:1 over light scenes;
+                                              visually nil on dark ones */
+  --media-capsule-ink: #FFFFFF;   /* msgDateImgFg = msgServiceFg = windowFgActive */
+  --media-icon: #EFEFEF;          /* historyFileThumbIconFg: play/download icon, radial arc */
+  --map-pin: #FD4444;             /* mapPointDrop: same both themes */
+  --map-pin-dot: #FFFFFF;         /* mapPointDot: same both themes */
+  --map-bg: #202B36;              /* design value: stand-in for the real map tile */
+  --map-road: #2C3946;            /* design value: street lines on the stand-in */
+  --scene-row: #33414E;           /* design value: feed rows on the .vid stand-in scene
+                                     (NOT --map-road: the scene is content, the rows must
+                                     read in both themes; see video.css) */
+
+  /* mono code block (.pre): text = msgInMonoFg / msgOutMonoFg; dark themes
+     paint the block bg as flat #000000 @ 75% for BOTH sides (EnsurePreCache,
+     ui/chat/chat_style.cpp:767-769) */
+  --mono-in: #5A8CB7;             /* msgInMonoFg */
+  --mono-out: #AED1F3;            /* msgOutMonoFg */
+  --pre-bg-in: rgba(0, 0, 0, .75);   /* dark override, NOT monoFg @ 12% */
+  --pre-bg-out: rgba(0, 0, 0, .75);
+
+  --bubble-line: transparent;     /* night bubbles have no border */
+  --own-line: transparent;
+  --reaction-bg: rgba(63, 150, 208, .12);   /* msgFileInBg @ kInNonChosenOpacity 0.12 */
+  --interstitial-bg: rgba(245, 166, 35, .07);
+  --interstitial-ink: #F5A623;    /* = --amber; light themes darken it (projector) */
+
+  /* viewer chrome (chat-list rail) */
+  --rail-bg: #17212B; --rail-line: #0E1621; --rail-sub: #708499;
+  --rail-active: #2B5278; --rail-active-ink: #FFFFFF; --rail-active-sub: #B9D2EA;
+
+  --sans: "Inter", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+}
+
+/* ---- The light themes: "Classic" (lib_ui default palette) + "Day"
+   (day-blue.tdesktop-theme). Not inversions of the dark themes: incoming
+   bubbles are white, own bubbles pale green (Classic) / pale blue (Day);
+   the two palettes differ ONLY on the outgoing side (verified: 6 keys),
+   so they share this base block. Bright UI-tier accents swap to their
+   chart-mark tier so text holds contrast on white. ---- */
+[data-theme="classic"], [data-theme="day"] {
+  color-scheme: light;
+  --ground: #DFE7ED;            /* design value */
+  --slide: #FFFFFF;             /* windowBg */
+  --surface: #FFFFFF;           /* msgInBg = windowBg */
+  --raised: #FFFFFF;
+  --ink: #000000;               /* windowFg */
+  --ink-2: #999999;             /* windowSubTextFg */
+  --ink-out: #000000;           /* historyTextOutFg = windowFg */
+  --meta-in: #A0ACB6;           /* msgInDateFg */
+  --line: #DCE4EB;              /* hairline (design value) */
+  --replybar: #37A1DE;          /* msgInReplyBarColor = activeLineFg */
+  --comments-link: #168ACD;     /* msgFileThumbLinkInFg → lightButtonFg = windowActiveTextFg */
+  --active-text: #168ACD;       /* windowActiveTextFg */
+  --service-in: #168ACD;        /* msgInServiceFg = windowActiveTextFg */
+  --poll-bar: #40A7E3;          /* msgFileInBg = windowBgActive */
+  --unread-bg: #FCFBFA;         /* historyUnreadBarBg */
+  --unread-ink: #538BB4;        /* historyUnreadBarFg */
+  --unread-line: rgba(0, 0, 0, .094);     /* historyUnreadBarBorder = shadowFg #00000018 */
+  --pinned-bg: #FFFFFF;         /* historyPinnedBg = historyComposeAreaBg = msgInBg */
+
+  --blue: #1E86C7; --coral: #E05252; --teal: #2E9E78; --amber: #C8821F;
+  --ghost: #36424B;             /* design value; projector: ghosts sit on the
+                                   wallpaper, so this clears 4.5:1 on Day's
+                                   blue (#74B4E0) and the Classic doodle's
+                                   mid-greens, not just on white, while
+                                   staying visibly lighter than the black ink */
+
+  --map-bg: #E9EDF0;            /* design value: stand-in for the real map tile */
+  --map-road: #FFFFFF;          /* design value: street lines on the stand-in */
+  --scene-row: #B7C5D1;         /* design value: white-on-light vanishes; the scene
+                                   rows keep real contrast on the light tile */
+
+  --peer1: #EC0C13; --peer2: #328806; --peer3: #9D6D06; --peer4: #087DBE;
+  --peer5: #910CFC; --peer6: #E50C73; --peer7: #088198; --peer8: #BD5A07;
+  /* design values: max-chroma at ≥ 4.5:1 on the white bubble surface, hue
+     per slot (see the :root peer-palette comment); identical in Classic
+     and Day, like the client's own light values. */
+  --media-icon: #FFFFFF;        /* historyFileThumbIconFg light = windowBg #FFFFFF */
+
+  --mono-in: #4E7391;           /* msgInMonoFg */
+  --pre-bg-in: rgba(78, 115, 145, .12);   /* msgInMonoFg @ 12% (EnsurePreCache) */
+
+  --bubble-line: #DCE4EB;       /* design value: the real light themes use a 1px
+                                   bottom shadow (msgInShadow #748EA229), no border;
+                                   the hairline is the projector-safe equivalent */
+  --reaction-bg: rgba(64, 167, 227, .12); /* msgFileInBg @ 0.12 */
+  --interstitial-bg: #FBF2DF;   /* design value; projector: solid pale amber;
+                                   the .07 alpha let the Classic doodle / Day
+                                   blue bleed through the text */
+  --interstitial-ink: #6E4605;  /* design value; projector: deep amber, 7.4:1
+                                   on the card (--amber #C8821F is only 3.2:1
+                                   on white) */
+
+  --rail-bg: #FFFFFF; --rail-line: #E7E7E7; --rail-sub: #999999;
+  --rail-active: #419FD9;       /* dialogsBgActive */
+  --rail-active-ink: #FFFFFF; --rail-active-sub: #E7F3FB;
+}
+
+/* "Classic": the outgoing side is pale green, don't "fix" it to blue */
+[data-theme="classic"] {
+  /* Classic's real wallpaper is an image, the doodle pattern
+     (art/background.tgv) soft-lit at 0.5 over the 4-color swirl gradient,
+     reconstructed at slides/assets/wallpaper/classic.webp and applied by
+     deck.css. --slide stays white beneath it (windowBg). */
+  --own: #EFFDDE;               /* msgOutBg */
+  --meta-out: #6DB566;          /* msgOutDateFg */
+  --replybar-out: #5EB854;      /* msgOutReplyBarColor: green, matches the own bubble */
+  --service-bg: rgba(64, 99, 51, .9);  /* msgServiceBg is #517C417F (greenish,
+                                          .498); design value; projector:
+                                          darker + denser so the white pill
+                                          text holds ≥ 4.5:1 over the doodle */
+  --mono-out: #459866;          /* msgOutMonoFg */
+  --pre-bg-out: rgba(69, 152, 102, .12);  /* msgOutMonoFg @ 12% */
+  --own-line: #DDEECB;          /* design value: hairline stand-in for
+                                   msgOutShadow #3AC3461D (see --bubble-line) */
+}
+
+/* "Day": day-blue.tdesktop-theme, the outgoing side re-tinted blue. Its
+   real wallpaper is a flat 1x1 #74B4E0 pixel, so unlike Classic (white
+   stands in for the doodle pattern) the slide background is the genuine
+   article. */
+[data-theme="day"] {
+  --slide: #74B4E0;             /* chat wallpaper: day-blue background.png pixel */
+  --own: #DEF1FD;               /* msgOutBg */
+  --meta-out: #86A8C2;          /* msgOutDateFg */
+  --replybar-out: #059DE8;      /* msgOutReplyBarColor = historyOutIconFg */
+  --service-bg: rgba(0, 81, 128, .85);  /* msgServiceBg is #00518059 (bluish,
+                                           .349); design value; projector:
+                                           denser so the white pill text holds
+                                           ≥ 4.5:1 over the blue wallpaper */
+  --mono-out: #4E7391;          /* msgOutMonoFg (= msgInMonoFg here) */
+  --pre-bg-out: rgba(78, 115, 145, .12);  /* msgOutMonoFg @ 12% */
+  --own-line: #C9E4F6;          /* design value: hairline stand-in for
+                                   msgOutShadow #0D5A911A (see --bubble-line) */
+}
+
+/* ---- "Night": night-green.tdesktop-theme, the dark layout re-tinted
+   teal. Only the diffs from the :root Tinted values; everything else
+   (accents, ghost, media overlays, map, .pre backgrounds) inherits. ---- */
+[data-theme="night"] {
+  --ground: #0B0C0E;            /* design value */
+  --slide: #18191D;             /* chat wallpaper: night-green background.png pixel, sideBarBg */
+  --surface: #33393F;           /* msgInBg */
+  --raised: #282E33;            /* windowBg, dialogsBg */
+  --own: #2A2F33;               /* msgOutBg */
+  --ink-2: #82868A;             /* windowSubTextFg */
+  --meta-in: #828D94;           /* msgInDateFg */
+  --meta-out: #737F87;          /* msgOutDateFg */
+  --line: #3A4046;              /* hairline (design value) */
+  --replybar: #32CEB9;          /* msgInReplyBarColor */
+  --comments-link: #79E8DA;     /* msgFileThumbLinkInFg → lightButtonFg */
+  --replybar-out: #32CEB9;      /* msgOutReplyBarColor */
+  --active-text: #4BE1C3;       /* windowActiveTextFg */
+  --service-in: #4BE1C3;        /* msgInServiceFg = windowActiveTextFg */
+  --poll-bar: #50D4C3;          /* msgFileInBg */
+  --service-bg: rgba(54, 60, 67, .784);  /* msgServiceBg #363C43C8 */
+  --chosen-ink: #33393F;        /* historyFileInIconFg: dark label on the teal chip */
+  --unread-bg: #33393F;         /* historyUnreadBarBg */
+  --unread-ink: #3CD3BF;        /* historyUnreadBarFg */
+  --unread-line: rgba(0, 0, 0, .094);    /* historyUnreadBarBorder = shadowFg #00000018 */
+  --pinned-bg: #282E33;         /* historyPinnedBg = historyComposeAreaBg */
+
+  --peer1: #FE787B; --peer2: #1DEF13; --peer3: #FAC913; --peer4: #12C1FE;
+  --peer5: #BB89FE; --peer6: #FE71A6; --peer7: #16DEFE; --peer8: #FDA710;
+  /* design values: max-chroma in the 4.5–7.5:1 band on the night-green
+     bubble surface #33393F, hue per slot (see the :root comment) */
+
+  --mono-in: #5AABA0;           /* msgInMonoFg */
+  --mono-out: #C2F2EC;          /* msgOutMonoFg */
+
+  --reaction-bg: rgba(80, 212, 195, .12); /* msgFileInBg @ 0.12 */
+
+  --rail-bg: #282E33; --rail-line: #18191D; --rail-sub: #82868A;
+  --rail-active: #009687;       /* dialogsBgActive */
+  --rail-active-ink: #FFFFFF; --rail-active-sub: #B7E5DE;
+}

@@ -1,0 +1,13 @@
+link_type,count,pct
+public_handle(queued),1188846,52.25
+deep_link(to_message),556574,24.46
+invite(+hash),311634,13.7
+query_link(bot/start/share),134483,5.91
+reserved_path,47456,2.09
+deep_link(other),24795,1.09
+other/malformed,4308,0.19
+invite(joinchat),4111,0.18
+handle_rejected(short/digit-lead),2629,0.12
+web_preview(/s/),539,0.02
+bare_root,76,0.0
+query_link(other),35,0.0

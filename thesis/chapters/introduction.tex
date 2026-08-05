@@ -1,0 +1,24 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+Telegram is one of the central venues for public, large-scale, and often consequential communication: news distribution, political mobilisation, crisis information, and harmful content, whose presence on the platform is by now well documented in the research literature~\cite{baumgartner2020,walther2021,hoseini2024,propaganda2025}. As of early 2026 the platform reports more than a billion monthly active users, and its public \emph{channels}, one-to-many broadcast feeds with optional linked discussion groups, are where much of this public activity happens. Unlike the closed graphs of most social platforms, Telegram exposes channels and their content through a documented client API, which makes systematic collection possible. This has produced a small number of valuable research corpora, but they share a structural limitation: they are snapshots. Even the corpora that reach beyond broadcast channels into discussion groups and user accounts record each object as it existed at collection time, and discard almost everything that makes a channel a living object over time.
+
+Prior corpora store a single \texttt{edit\_date} timestamp but not the before-and-after text of edits, so what an edit changed is unknowable. They do not track deletions, so moderation is invisible. They keep one metadata reading per channel, so they cannot say how a channel's title, picture, subscriber count, or restriction flags evolved. Several do not recurse into the linked groups where audiences reply either, leaving the comment layer absent, and even the corpora that do collect it captured each thread only once, frozen at collection time. The result is that a large class of questions, about content volatility, moderation, platform restriction, and audience interaction over time, cannot be answered from the existing public record, however large that record is.
+
+This thesis addresses that gap with a system and a dataset built for longitudinal tracking and per-channel richness rather than channel count. The system is a single-worker scraper that visits public channels repeatedly, recurses into their discussion groups, and on each visit detects edits and deletions and snapshots channel metadata. The resulting corpus, TGDataset2, is deliberately a smaller set of channels, each revisited over time, and it adds the temporal layers, message edits, deletions, and metadata evolution, that no prior general-purpose Telegram corpus collected. The remainder of the thesis substantiates this claim and then exercises the new layers on real analyses.
+
+\section*{Contributions}
+
+This thesis makes the following contributions:
+
+\begin{enumerate}
+  \item \textbf{A scraper system} for deep, longitudinal collection of public Telegram channels, including recursive discussion-group collection, per-visit edit and deletion detection, and an alignment protocol for temporally consistent snapshots, all engineered to run continuously within the platform's rate limits on a single machine (Chapter~\ref{chap:methodology}).
+
+  \item \textbf{The TGDataset2 corpus}: a deliberately smaller set of channels, each revisited over time, so it captures how content and channels change rather than a single snapshot (Section~\ref{sec:res-corpus}), and from which we reconstruct the forward graph and correct several common misreadings of it (Section~\ref{sec:res-network}).
+
+  \item \textbf{A current-events showcase} that exercises several of the new layers at once on the 2026 US/Israel--Iran war response, leading with method (per-cohort indexing, pooled-vs-median decomposition, an exogenous timing clock) rather than raw volume (Section~\ref{sec:res-war}).
+\end{enumerate}
+
+\section*{Thesis outline}
+
+Chapter~\ref{chap:background} surveys the Telegram platform and the existing public datasets, positioning this work against them. Chapter~\ref{chap:methodology} describes the scraper system: its architecture, the snowball channel-discovery mechanism, the database schema, the combined scraping pass that performs message collection together with edit and deletion detection, the alignment snapshot protocol, and the robustness features that allow reliable continuous operation. Chapter~\ref{chap:results} turns the corpus into evidence, characterising what it is, reconstructing the forward graph and correcting common misreadings of it, presenting the new capability layers together with the per-platform restriction-reason signal, and exercising them on the war showcase. Chapter~\ref{chap:conclusion} consolidates the limitations, restates the outcomes, and outlines future work.

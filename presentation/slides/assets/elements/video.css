@@ -1,0 +1,105 @@
+/* ============ video (.vid): video / photo attachment chrome ============
+   Snippets (inside a bubble; the .vid-scene <i> rows are the stand-in
+   "content", a stylized feed):
+     video, buffering (the deck's between-visits image):
+     <div class="bubble own">
+       <div class="vid">
+         <div class="vid-scene"><i></i><i></i><i></i></div>
+         <span class="vid-dur">0:42</span>
+         <span class="vid-buffer"></span>
+       </div>
+       <span class="meta">caption · 20:31</span>
+     </div>
+     video, downloaded and ready: <span class="vid-circle"></span> in place
+     of .vid-buffer (play triangle, no arc)
+     photo: no center chrome, a corner capsule instead:
+     <div class="vid">
+       <div class="vid-scene"><i></i><i></i><i></i></div>
+       <span class="vid-time">frame 1 of 1</span>
+     </div>
+     caption-less media: the real client stamps the time in the corner
+     capsule instead: fold it in, e.g. "frame 1 of 1 · 20:24"
+     scene variants:
+     - .vid-scene.tall: centerpiece height, for a slide whose one image is
+       this attachment (default height reads as a thumbnail strip); fits a
+       4-row scene with air
+     - .vid-scene.now: a different row composition, so two attachments of
+       the same channel read as different moments, not twins (widths defined
+       for up to 5 rows):
+       <div class="vid-scene now"><i></i><i></i><i></i></div>
+
+   Source (tdesktop v6.3.10, history/view/media/history_view_gif.cpp;
+   chat.style; palettes night colors.tdesktop-theme / lib_ui@894b4595
+   ui/colors.palette):
+   - center circle: msgFileLayout.thumbSize 44px on msgDateImgBg #00000054,
+     icons historyFileThumbPlay / historyFileThumbDownload in
+     historyFileThumbIconFg (#EFEFEF night / #FFFFFF day = --media-icon)
+   - buffering: Ui::InfiniteRadialAnimation, arc thickness msgFileRadialLine
+     3px, color historyFileThumbRadialFg = the icon color; arc sweeps
+     between 0.0625 and 0.75 of the circle
+   - duration label: TOP-LEFT corner (bottom-right is only the round-video
+     pill), msgDateImgDelta 4px + msgDateImgPadding 8/2, normalFont on
+     msgDateImgBg, fg msgDateImgFg; the GIF variant reads "GIF, 12.3 MB"
+   - a photo/video thumb carries its timestamp bottom-right over the media
+     (msgDateImg capsule), like the location attachment
+   Deviations:
+   - the scene is a stylized stand-in: the real client shows an actual
+     thumbnail. Tile bg is --map-bg (shared with the location map) but the
+     rows are --scene-row, NOT --map-road: white-on-light roads are correct
+     map styling yet vanish as "content", so the rows get their own fill
+     with real contrast in both themes
+   - metrics scaled 2× (circle 88px, arc 6px, offsets 8px)
+   - the buffering arc spins as a PERPETUAL ambient loop (the one allowed
+     animation class, like the typing blink); it holds still under reduced
+     motion and in print */
+
+.vid { position: relative; border-radius: 8px; overflow: hidden; margin-top: 6px; }
+.vid-scene {
+  height: 120px; background: var(--map-bg);
+  padding: 16px 18px; display: grid; gap: 12px; align-content: start;
+}
+.vid-scene i { display: block; height: 20px; border-radius: 7px; background: var(--scene-row); }
+.vid-scene i:nth-child(1) { width: 46%; }
+.vid-scene i:nth-child(2) { width: 72%; }
+.vid-scene i:nth-child(3) { width: 58%; }
+.vid-scene i:nth-child(4) { width: 66%; }
+
+/* centerpiece height: the slide's one image, not a thumbnail strip */
+.vid-scene.tall { height: 200px; padding: 20px 22px; }
+
+/* a later moment of the same channel: different rows, so photo and video
+   never read as identical twins */
+.vid-scene.now i:nth-child(1) { width: 64%; }
+.vid-scene.now i:nth-child(2) { width: 38%; }
+.vid-scene.now i:nth-child(3) { width: 74%; }
+.vid-scene.now i:nth-child(4) { width: 30%; }
+.vid-scene.now i:nth-child(5) { width: 56%; }
+
+.vid-dur, .vid-time {
+  position: absolute; font-family: var(--mono); font-size: 17px;
+  color: var(--media-capsule-ink); background: var(--media-capsule-bg);
+  padding: 4px 16px; border-radius: 999px;
+}
+.vid-dur { left: 8px; top: 8px; }      /* duration is top-left, verified */
+.vid-time { right: 8px; bottom: 8px; } /* timestamp over media, bottom-right */
+
+.vid-circle, .vid-buffer {
+  position: absolute; inset: 0; margin: auto;
+  width: 88px; height: 88px; border-radius: 50%;
+  background: var(--media-capsule-bg);
+}
+.vid-circle::after {  /* play triangle */
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 0; height: 0; transform: translateX(4px);
+  border: 18px solid transparent; border-right-width: 0;
+  border-left: 28px solid var(--media-icon);
+}
+.vid-buffer::after {  /* the infinite radial, mid-sweep */
+  content: ""; position: absolute; inset: 14px; border-radius: 50%;
+  border: 6px solid transparent; border-top-color: var(--media-icon);
+  border-right-color: var(--media-icon);
+  animation: vid-spin 1.1s linear infinite;
+}
+@keyframes vid-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .vid-buffer::after { animation: none; } }
+@media print { .vid-buffer::after { animation: none; } }

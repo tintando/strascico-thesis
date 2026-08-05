@@ -1,0 +1,37 @@
+<!-- ============ 10 · THE EDIT FLAG LIES ============ -->
+<section class="slide" data-title="The edit flag lies" data-summary="93% change nothing">
+  <div class="shead">
+    <span class="av">TG</span>
+    <div class="ch">
+      <span class="t">The edit flag <em>lies</em></span>
+      <span class="sub">Telegram's edit_date field</span>
+    </div>
+    <span class="visit">visit 10 of 16</span>
+  </div>
+  <div class="sbody thread">
+    <div class="bubble" style="max-width:980px"><span class="sender p6">Telegram</span>One message in three carries an <span class="mono">edit_date</span>.
+      <span class="meta">20:55</span>
+    </div>
+    <div class="poll" style="width:620px">
+      <span class="sender p4">Corpus</span>
+      <div class="q">What did the edits we caught change?</div>
+      <div class="cap">share of edits we caught and diffed · 36,016 diffed edits</div>
+      <div class="opt"><span class="pct">93%</span><span>nothing: text byte-identical</span><span class="n">33,660</span>
+        <div class="bar"><i style="width:93.5%;background:var(--teal-mark)"></i></div></div>
+      <div class="opt"><span class="pct">7%</span><span>the text actually changed</span><span class="n">2,356</span>
+        <div class="bar"><i style="width:6.5%;background:var(--teal-mark)"></i></div></div>
+    </div>
+    <div class="bubble own"><span class="mono">edit_date</span> <b>over-counts</b> real rewrites <b>~10×</b>. Only the visit-to-visit diff finds them.
+      <span class="meta">20:59</span>
+    </div>
+  </div>
+  <aside class="notes">
+    So what do the layers show? Start with edits. Telegram stamps an edit date
+    on every edited message, and by that flag, one message in three has been
+    edited. That is misleading. Of the edits we caught and diffed, ninety-three
+    percent left the text byte for byte identical: it might be added media,
+    link previews resolving, formatting. The flag over-counts real rewriting
+    about ten times, and only the visit-to-visit diff, which holds both
+    versions, can tell the difference.
+  </aside>
+</section>

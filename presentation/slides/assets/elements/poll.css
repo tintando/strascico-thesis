@@ -1,0 +1,61 @@
+/* ============ poll: Telegram poll results, the deck's bar chart ============
+   Snippet:
+     <div class="poll">
+       <span class="sender p4">Corpus</span>   <!-- every poll is a Corpus message -->
+       <div class="q">Question = chart title</div>
+       <div class="cap">what the bars are (sample / base / unit)</div>
+       <div class="opt"><span class="pct">62%</span><span>option text</span><span class="n">1,450</span>
+         <div class="bar"><i style="width:62%"></i></div></div>
+       <div class="opt"><span class="pct">38%</span><span>option text</span><span class="n">906</span>
+         <div class="bar"><i style="width:38%"></i></div></div>
+     </div>
+   (.n is optional, only when the values are shares of a counted whole;
+   without it the third grid column collapses to nothing.)
+
+   Source: tdesktop v6.3.10 history_view_poll.cpp Poll::paintFilling +
+   ui/chat/chat.style:
+   - anatomy: semibold question, muted caption (lng_polls_anonymous,
+     "Anonymous Poll"), bold value LEFT of the option in text color, muted
+     absolute votes count right-aligned at the row's right edge, thin bar under
+     the option text, muted "N votes" footer (lng_polls_votes_count)
+   Deck deviation: the client's footer slot is dropped and its content moves
+   into the caption, so a poll says what its bars are directly under the
+   question, where the client says "Anonymous Poll". The caption holds one
+   line, and the base is the more useful fact than the anonymity notice.
+   - a poll is a message, so it carries the same incoming tail flap as
+     .bubble (polls always sit on the left rail); flap pseudo-elements
+     duplicated from bubble.css (each element file is self-contained)
+   - bar fill = stm->msgFileInBg (v6.9.3 has no bare msgFileBg key): #3F96D0 night / #40A7E3 day (--poll-bar).
+     Override per layer with a semantic chart-mark accent
+     (style="background:var(--amber-mark)") when the poll IS that layer.
+   - real metrics: historyPollFillingHeight 4px, radius 1px, scaled to 6px/3px
+     at deck size (26px body vs Telegram's 13px)
+   Labelling rules: real value + unit in the left column,
+   caption names the base. Bar width: percentage values → the value itself on
+   a 0–100% track (true shares sum to the full track, like real vote shares);
+   non-percentage values (×, scores, counts) → scaled so the largest option
+   fills the track. */
+
+.poll { position: relative; /* anchors the tail flap */ background: var(--surface); border: 1px solid var(--bubble-line); border-radius: 16px 16px 16px 0; /* tail side square: the flap's curve is the corner */ padding: 16px 24px 18px; /* deeper than a bubble's 12px: the last bar needs air under it, or it reads as clipped */ display: grid; gap: 10px; width: 420px; font-size: 22px; }
+/* incoming tail flap, duplicated from bubble.css (::before = hairline
+   underlay for Day Feed, ::after = flap in the poll surface) */
+.poll::before, .poll::after { content: ""; position: absolute; }
+.poll::before {
+  left: -13px; bottom: -2px; width: 14px; height: 22px; background: var(--bubble-line);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20'%3E%3Cpath d='M12 0C12 10 8 17 0 20L12 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20'%3E%3Cpath d='M12 0C12 10 8 17 0 20L12 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+.poll::after {
+  left: -12px; bottom: -1px; width: 14px; height: 20px; background: var(--surface);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 20'%3E%3Cpath d='M14 0L12 0C12 10 8 17 0 20L14 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 20'%3E%3Cpath d='M14 0L12 0C12 10 8 17 0 20L14 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+.poll .sender { display: block; font-weight: 600; font-size: 26px; margin-bottom: -5px; } /* deck voice: Corpus (p4 blue = ours/system, deliberately), at the deck's author size */
+.poll .q { font-weight: 600; font-size: 25px; }
+.poll .cap { font-family: var(--mono); font-size: 16px; color: var(--ink-2); margin-top: -10px; } /* the base, mono because it's a measurement */
+.poll .opt { display: grid; grid-template-columns: minmax(84px, max-content) 1fr max-content; gap: 5px 12px; align-items: baseline; }
+.poll .opt .pct { font-family: var(--mono); font-weight: 500; text-align: right; }
+.poll .opt .n { font-family: var(--mono); font-size: 18px; color: var(--ink-2); text-align: right; } /* absolute count at the row's right edge, muted like the real client's */
+.poll .opt .bar { grid-column: 2 / -1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.poll .opt .bar i { display: block; height: 100%; border-radius: 3px; background: var(--poll-bar); }
+.poll .comments { margin-bottom: -18px; } /* the strip still sits flush on the poll's bottom edge */

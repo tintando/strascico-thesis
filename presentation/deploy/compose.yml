@@ -1,0 +1,43 @@
+# tgdataset2-public: nginx serving the baked dist/, reached only through the
+# cloudflared tunnel (no inbound ports). Entirely static: no write endpoint,
+# no server-side state.
+#
+#   node deploy/build.mjs
+#   docker compose -f deploy/compose.yml up -d --build
+#
+# This is a different compose project from the root docker-compose.yml
+# (tgdataset2-dev: the live-reload dev server on :8080, local only). The image
+# carries dist/ inside it, so a running container is frozen at the build it
+# came from: editing a slide changes nothing here until the two commands above
+# are run again.
+name: tgdataset2-public
+
+services:
+  public:
+    build:
+      context: ..                  # repo root, so dist/ is in the build context
+      dockerfile: deploy/Dockerfile
+    image: tgdataset2-public:local
+    container_name: tgdataset2-public
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8090:80"        # local sanity check; not reachable off-host
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.6.1
+    container_name: tgdataset2-public-tunnel
+    restart: unless-stopped
+    user: "1000:1000"              # so the 0400 credentials file stays readable
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflared/config.yml:/etc/cloudflared/config.yml:ro
+      # gitignored copy of ~/.cloudflared/<tunnel-uuid>.json: Docker only mounts
+      # paths it shares, and the home directory is not one of them
+      - ${TUNNEL_CREDENTIALS:-./cloudflared/credentials.json}:/etc/cloudflared/credentials.json:ro
+    depends_on:
+      - public

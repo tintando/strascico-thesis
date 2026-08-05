@@ -1,0 +1,5 @@
+dataset,channels,channel_messages,comment_messages,msgs_per_channel,updated_to
+TGDataset (KDD '25),120979,498320597,,4119,Jul 2022
+Pushshift,27801,192044689,,6908,-
+Nobari et al.,2556,36928,,14,-
+TGDataset2 (ours),8284,141756814,333158901,17112,Sep 2015 - Jun 2026

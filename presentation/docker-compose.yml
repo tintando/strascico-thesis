@@ -1,0 +1,18 @@
+# tgdataset2-dev: LOCAL ONLY, not on the internet.
+# Live-serving deck container: `docker compose up` → http://localhost:8080
+# The bind mount means the served deck is always the files on disk; the
+# server pushes a browser reload (SSE) on every change. No image build, no
+# node_modules; the server is dependency-free.
+# The public deck is a different compose project: deploy/compose.yml.
+name: tgdataset2-dev
+
+services:
+  dev:
+    image: node:22-alpine
+    container_name: tgdataset2-dev
+    command: node /app/server/server.js
+    volumes:
+      - ./slides:/app
+    ports:
+      - "127.0.0.1:8080:8080"
+    restart: unless-stopped

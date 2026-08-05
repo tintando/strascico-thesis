@@ -1,0 +1,61 @@
+/* ============ location (.loc): venue / location attachment ============
+   Snippet (an incoming message sharing a venue; works as own too):
+     <div class="bubble loc">
+       <div class="loc-map"><span class="loc-pin"></span></div>
+       <div class="loc-txt">
+         <span class="loc-title">Venue name</span>
+         <span class="loc-addr">Street address · detail</span>
+         <span class="meta">20:09</span>
+       </div>
+     </div>
+
+   Source (tdesktop v6.9.3, history/view/media/history_view_location.cpp;
+   styles chat.style + lib_ui@742640cb ui/basic.style, ui/colors.palette):
+   - venue = map thumbnail on TOP, then title + address BELOW (draw() paints
+     the thumb at painty, advances painty += thumbh, then paintText());
+     a bare location has no text at all
+   - title: webPageTitleStyle = semiboldFont, body size; address drawn with
+     the SAME pen as body text (one p.setPen(stm->historyTextFg) covers
+     both); the address is not grayed
+   - timestamp: normal text-style info in the text area (msgInDateFg via
+     InfoDisplayType::Default; hasText disables the over-media capsule;
+     the msgDateImgBg capsule appears on BARE locations only)
+   - map corners: with text below, top corners inherit the bubble rounding
+     and BOTH bottom corners are squared (adjustedBubbleRounding with
+     square = RectPart::FullBottom)
+   - pin: two stacked centered icons, drop mapPointDrop #FD4444 + inner dot
+     mapPointDot #FFFFFF, the drop's TIP at the vertical center of the map
+   Deviations:
+   - the map itself is a stylized CSS stand-in (--map-bg / --map-road);
+     the real client renders an actual map tile
+   - real locationSize is 320x240; the deck letterboxes to full bubble
+     width x 120px so a venue message fits the fixed 720px slide */
+
+.bubble.loc { padding: 0; width: 640px; }
+.loc-map {
+  position: relative; height: 120px;
+  border-radius: 15px 15px 0 0;   /* bubble radius minus the 1px border; bottom squared */
+  background-color: var(--map-bg);
+  background-image:
+    linear-gradient(115deg, transparent calc(50% - 5px), var(--map-road) calc(50% - 5px), var(--map-road) calc(50% + 5px), transparent calc(50% + 5px)),
+    linear-gradient(90deg, transparent 118px, var(--map-road) 118px, var(--map-road) 124px, transparent 124px),
+    linear-gradient(90deg, transparent calc(100% - 152px), var(--map-road) calc(100% - 152px), var(--map-road) calc(100% - 146px), transparent calc(100% - 146px)),
+    linear-gradient(180deg, transparent 38px, var(--map-road) 38px, var(--map-road) 43px, transparent 43px),
+    linear-gradient(180deg, transparent 96px, var(--map-road) 96px, var(--map-road) 101px, transparent 101px);
+}
+.loc-txt { padding: 12px 22px 14px; }   /* msgPadding 11/8 scaled 2x, rounded */
+.loc-title { display: block; font-weight: 600; }
+.loc-addr { display: block; }           /* same ink as body text: verified, not gray */
+.bubble.loc .meta {                     /* normal date-style info, bottom-right of the
+                                           text area beside the last line (msgDateDelta) */
+  position: absolute; right: 22px; bottom: 12px; margin: 0;
+}
+.loc-pin {
+  position: absolute; left: 50%; top: 50%; width: 34px; height: 34px;
+  background: var(--map-pin); border-radius: 50% 50% 0 50%;
+  transform: translate(-50%, -120%) rotate(45deg);  /* tip lands on map center */
+}
+.loc-pin::after {
+  content: ""; position: absolute; inset: 0; margin: auto;
+  width: 12px; height: 12px; border-radius: 50%; background: var(--map-pin-dot);
+}

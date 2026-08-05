@@ -1,0 +1,13 @@
+{
+  "name": "tgdataset2-deck-build",
+  "private": true,
+  "type": "module",
+  "description": "Build-time only: turns slides/ into the static dist/ served by deploy/compose.yml. The built deck itself has no dependencies.",
+  "scripts": {
+    "build": "node build.mjs",
+    "portable": "node build.mjs --portable"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.5"
+  }
+}

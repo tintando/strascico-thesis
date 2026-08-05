@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: ci
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deck:
+    name: presentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: presentation/deploy/package-lock.json
+
+      - run: npm ci
+        working-directory: presentation/deploy
+
+      # Builds the deck to a static dist/, which is also what a Pages deploy
+      # would publish.
+      - run: node build.mjs
+        working-directory: presentation/deploy
+
+  thesis:
+    name: thesis pdf
+    runs-on: ubuntu-latest
+    # Runs the repo's own Makefile rather than a LaTeX action, so CI compiles
+    # the document exactly the way a local `make bib` does: pdflatex, bibtex,
+    # then two more passes to settle references.
+    container:
+      image: texlive/texlive:latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - run: make bib
+        working-directory: thesis
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thesis-pdf
+          path: thesis/thesis.pdf
+          if-no-files-found: error

@@ -1,0 +1,393 @@
+% References for the thesis.
+
+% --- Telegram platform and tools ---
+
+@misc{telegramapierrors,
+  author       = {{Telegram}},
+  title        = {Error handling},
+  year         = {2026},
+  howpublished = {Telegram API documentation},
+  url          = {https://core.telegram.org/api/errors},
+  note         = {Documents \texttt{FLOOD\_WAIT\_X} (error code 420): ``A wait of X seconds is required.'' Accessed: 2026-04-11},
+}
+
+@misc{tginfolimits,
+  author       = {{Telegram Info}},
+  title        = {Telegram Limits},
+  year         = {2026},
+  howpublished = {Community-maintained reference},
+  url          = {https://limits.tginfo.me/en},
+  note         = {Lists username-resolve limit as up to 200 per day for both bot and user accounts. Accessed: 2026-04-11},
+}
+
+@misc{telegram2026,
+  author       = {{Wikipedia contributors}},
+  title        = {Telegram (software)},
+  howpublished = {Wikipedia, The Free Encyclopedia},
+  year         = {2026},
+  url          = {https://en.wikipedia.org/wiki/Telegram_(software)},
+  note         = {Accessed April 2026},
+}
+
+@misc{telegramfaq,
+  author       = {{Telegram}},
+  title        = {Telegram {FAQ}},
+  year         = {2026},
+  howpublished = {Telegram official website},
+  url          = {https://telegram.org/faq},
+  note         = {States that groups can have up to 200{,}000 members and that channels are a tool for broadcasting messages to large audiences with an unlimited number of subscribers. Accessed: 2026-06-24},
+}
+
+@misc{telegramchannels,
+  author       = {{Telegram}},
+  title        = {Channels},
+  year         = {2026},
+  howpublished = {Telegram official website},
+  url          = {https://telegram.org/tour/channels},
+  note         = {Describes channels as a broadcast tool with an unlimited number of subscribers where only admins have the right to post. Accessed: 2026-06-24},
+}
+
+@misc{telegramdiscussion,
+  author       = {{Telegram}},
+  title        = {Discussion groups},
+  year         = {2026},
+  howpublished = {Telegram API documentation},
+  url          = {https://core.telegram.org/api/discussion},
+  note         = {States that ``groups can be associated to a channel as a discussion group, to allow users to discuss about posts'' and that ``the comment section of a channel post is simply the message thread of the automatically forwarded channel message in the linked discussion supergroup.'' Accessed: 2026-06-24},
+}
+
+@misc{telethon2026,
+  author = {Lonami},
+  title  = {Telethon: Pure {Python}~3 {MTProto} {API} {Telegram} Client Library},
+  year   = {2026},
+  url    = {https://codeberg.org/Lonami/Telethon},
+  note   = {v1 in maintenance mode; migrated from GitHub to Codeberg in February 2026},
+}
+
+@misc{telegramstats2025,
+  author = {Pavel Durov},
+  title  = {Telegram Surpasses 1 Billion Monthly Active Users},
+  year   = {2025},
+  note   = {Posted on X (Twitter) by @durov, 19 March 2025},
+  url    = {https://x.com/durov/status/1902454590747902091},
+}
+
+@misc{whatsapp2025,
+  author       = {Ivan Mehta},
+  title        = {{WhatsApp} Now Has More Than 3 Billion Users a Month},
+  howpublished = {TechCrunch},
+  year         = {2025},
+  note         = {1 May 2025},
+  url          = {https://techcrunch.com/2025/05/01/whatsapp-now-has-more-than-3-billion-users/},
+}
+
+@misc{wechat2025,
+  author       = {{Tencent Holdings Ltd.}},
+  title        = {Tencent Announces 2025 Third Quarter Results},
+  howpublished = {Tencent Investor Relations},
+  year         = {2025},
+  note         = {13 November 2025; Weixin/WeChat combined {MAU} 1.414 billion as of 30 September 2025},
+  url          = {https://static.www.tencent.com/uploads/2025/11/13/a33b6f19738615834787623f17d20ba3.pdf},
+}
+
+% --- Telegram datasets ---
+
+@inproceedings{baumgartner2020,
+  author    = {Jason Baumgartner and Savvas Zannettou and Megan Squire and Jeremy Blackburn},
+  title     = {The {Pushshift} {Telegram} Dataset},
+  booktitle = {Proceedings of the 14th International {AAAI} Conference on Web and Social Media ({ICWSM})},
+  volume    = {14},
+  pages     = {840--847},
+  year      = {2020},
+}
+
+@inproceedings{lamorgia2025,
+  author    = {Massimo {La Morgia} and Alessandro Mei and Alberto Maria Mongardini},
+  title     = {{TGDataset}: Collecting and Exploring the Largest {Telegram} Channels Dataset},
+  booktitle = {Proceedings of the 31st {ACM} {SIGKDD} Conference on Knowledge Discovery and Data Mining ({KDD})},
+  year      = {2025},
+  publisher = {ACM},
+  doi       = {10.1145/3690624.3709397},
+}
+
+@inproceedings{teragram2026,
+  author    = {Anastasia Golovin and Sebastian B. Mohr and Arne I. Gottwald and Ulrik Hvid and Srushhti Trivedi and Jo{\~a}o {Pinheiro Neto} and Andreas C. Schneider and Viola Priesemann},
+  title     = {{TeraGram}: A Structured Longitudinal Dataset of the {Telegram} Messenger},
+  booktitle = {Proceedings of the International {AAAI} Conference on Web and Social Media ({ICWSM})},
+  volume    = {20},
+  pages     = {2794--2816},
+  year      = {2026},
+  note      = {arXiv:2605.15956},
+}
+
+@inproceedings{blas2025,
+  author    = {Leonardo Blas and Luca Luceri and Emilio Ferrara},
+  title     = {Unearthing a Billion {Telegram} Posts about the 2024 {U.S.} Presidential Election: Development of a Public Dataset},
+  booktitle = {Companion Proceedings of the {ACM} Web Conference 2025 ({WWW} Companion~'25)},
+  year      = {2025},
+  publisher = {ACM},
+  address   = {Sydney, NSW, Australia},
+  doi       = {10.1145/3701716.3715297},
+}
+
+@inproceedings{propaganda2025,
+  author    = {Klim Kireev and Yevhen Mykhno and Carmela Troncoso and Rebekah Overdorf},
+  title     = {A {Telegram} Dataset of Propaganda and its Moderation},
+  booktitle = {Proceedings of the 19th International {AAAI} Conference on Web and Social Media ({ICWSM})},
+  volume    = {19},
+  pages     = {2510--2518},
+  year      = {2025},
+}
+
+% --- Telegram studies ---
+
+@article{bovet2022,
+  author  = {Alexandre Bovet and Peter Grindrod},
+  title   = {Organization and Evolution of the {UK} Far-Right Network on {Telegram}},
+  journal = {Applied Network Science},
+  volume  = {7},
+  pages   = {76},
+  year    = {2022},
+  doi     = {10.1007/s41109-022-00513-8},
+}
+
+@inproceedings{hoseini2024,
+  author    = {Mohamad Hoseini and Philipe {de Freitas Melo} and Fabr{\'i}cio Benevenuto and Anja Feldmann and Savvas Zannettou},
+  title     = {Characterizing Information Propagation in Fringe Communities on {Telegram}},
+  booktitle = {Proceedings of the 18th International {AAAI} Conference on Web and Social Media ({ICWSM})},
+  volume    = {18},
+  pages     = {583--595},
+  year      = {2024},
+  doi       = {10.1609/icwsm.v18i1.31336},
+}
+
+@inproceedings{hanley2024,
+  author    = {Hans W. A. Hanley and Zakir Durumeric},
+  title     = {Partial Mobilization: Tracking Multilingual Information Flows amongst {Russian} Media Outlets and {Telegram}},
+  booktitle = {Proceedings of the 18th International {AAAI} Conference on Web and Social Media ({ICWSM})},
+  volume    = {18},
+  pages     = {528--541},
+  year      = {2024},
+}
+
+@inproceedings{kloo2024,
+  author    = {Ian Kloo and Iain J. Cruickshank and Kathleen M. Carley},
+  title     = {A Cross-Platform Topic Analysis of the {Nazi} Narrative on {Twitter} and {Telegram} during the 2022 {Russian} Invasion of {Ukraine}},
+  booktitle = {Proceedings of the 18th International {AAAI} Conference on Web and Social Media ({ICWSM})},
+  volume    = {18},
+  pages     = {839--850},
+  year      = {2024},
+}
+
+% --- Telegram societal context and moderation ---
+
+@article{rogers2020,
+  author  = {Richard Rogers},
+  title   = {Deplatforming: Following Extreme Internet Celebrities to {Telegram} and Alternative Social Media},
+  journal = {European Journal of Communication},
+  volume  = {35},
+  number  = {3},
+  pages   = {213--229},
+  year    = {2020},
+  doi     = {10.1177/0267323120922066},
+}
+
+@article{urman2022,
+  author  = {Aleksandra Urman and Stefan Katz},
+  title   = {What They Do in the Shadows: Examining the Far-Right Networks on {Telegram}},
+  journal = {Information, Communication \& Society},
+  volume  = {25},
+  number  = {7},
+  pages   = {904--923},
+  year    = {2022},
+  doi     = {10.1080/1369118X.2020.1803946},
+}
+
+@article{akbari2019,
+  author  = {Azadeh Akbari and Rashid Gabdulhakov},
+  title   = {Platform Surveillance and Resistance in {Iran} and {Russia}: The Case of {Telegram}},
+  journal = {Surveillance \& Society},
+  volume  = {17},
+  number  = {1/2},
+  pages   = {223--231},
+  year    = {2019},
+  doi     = {10.24908/ss.v17i1/2.12928},
+}
+
+@misc{iranban2018,
+  author       = {{Young Journalists Club}},
+  title        = {The End of {Telegram} in {Iran} Has Been Announced},
+  howpublished = {Bashgah-e Khabarnegaran-e Javan ({YJC})},
+  year         = {2018},
+  url          = {https://www.yjc.ir/fa/news/6518604/},
+  note         = {In Persian. Reports the Tehran Prosecutor's judicial order to fully block {Telegram} in {Iran}, 30 April 2018. Accessed: 2026-06-24},
+}
+
+@article{wijermars2022,
+  author  = {Mari{\"e}lle Wijermars and Tetyana Lokot},
+  title   = {Is {Telegram} a ``Harbinger of Freedom''? The Performance, Practices, and Perception of Platforms as Political Actors in Authoritarian States},
+  journal = {Post-Soviet Affairs},
+  volume  = {38},
+  number  = {1--2},
+  pages   = {125--145},
+  year    = {2022},
+  doi     = {10.1080/1060586X.2022.2030645},
+}
+
+@article{walther2021,
+  author  = {Samantha Walther and Andrew McCoy},
+  title   = {{U.S.} Extremism on {Telegram}: Fueling Disinformation, Conspiracy Theories, and Accelerationism},
+  journal = {Perspectives on Terrorism},
+  volume  = {15},
+  number  = {2},
+  pages   = {100--124},
+  year    = {2021},
+}
+
+@misc{durov2024,
+  author       = {{Wikipedia contributors}},
+  title        = {Arrest and Indictment of {Pavel Durov}},
+  howpublished = {Wikipedia, The Free Encyclopedia},
+  year         = {2026},
+  url          = {https://en.wikipedia.org/wiki/Arrest_and_indictment_of_Pavel_Durov},
+  note         = {Accessed April 2026},
+}
+
+@misc{pyrogram2024,
+  author       = {Dan},
+  title        = {Pyrogram: Elegant, Modern and Asynchronous {Telegram} {MTProto} {API} Framework in {Python}},
+  year         = {2024},
+  url          = {https://github.com/pyrogram/pyrogram},
+  note         = {v2.0.106; no new PyPI release since 2024; LGPL-3.0 licence},
+}
+
+@misc{telegramexport2020,
+  author       = {expectocode},
+  title        = {telegram-export: Export {Telegram} Chat Data and History},
+  year         = {2020},
+  url          = {https://github.com/expectocode/telegram-export},
+  note         = {Repository archived 23 October 2019; MPL-2.0 licence},
+}
+
+@misc{pythontelegrambot2026,
+  author       = {{python-telegram-bot contributors}},
+  title        = {python-telegram-bot: {Python} Wrapper for the {Telegram} {Bot} {API}},
+  year         = {2026},
+  url          = {https://github.com/python-telegram-bot/python-telegram-bot},
+  note         = {v22.x; wraps the HTTP Bot API, not MTProto; LGPL-3.0 licence},
+}
+
+% --- Snowball sampling ---
+
+@article{goodman1961,
+  author  = {Leo A. Goodman},
+  title   = {Snowball Sampling},
+  journal = {The Annals of Mathematical Statistics},
+  volume  = {32},
+  number  = {1},
+  pages   = {148--170},
+  year    = {1961},
+  doi     = {10.1214/aoms/1177705148},
+}
+
+@inproceedings{wagner2017,
+  author    = {Claudia Wagner and Philipp Singer and Fariba Karimi and J{\"u}rgen Pfeffer and Markus Strohmaier},
+  title     = {Sampling from Social Networks with Attributes},
+  booktitle = {Proceedings of the 26th International Conference on World Wide Web ({WWW})},
+  pages     = {1181--1190},
+  year      = {2017},
+  doi       = {10.1145/3038912.3052665},
+}
+
+% --- Database systems ---
+
+@misc{postgresql2026,
+  author       = {{The PostgreSQL Global Development Group}},
+  title        = {{PostgreSQL}: The World's Most Advanced Open Source Relational Database},
+  year         = {2026},
+  url          = {https://www.postgresql.org/},
+  note         = {Accessed April 2026},
+}
+
+@misc{mongodb2026,
+  author       = {{MongoDB, Inc.}},
+  title        = {{MongoDB}: The Developer Data Platform},
+  year         = {2026},
+  url          = {https://www.mongodb.com/},
+  note         = {Accessed April 2026},
+}
+
+@misc{sqlite2026,
+  author       = {{SQLite Consortium}},
+  title        = {{SQLite}},
+  year         = {2026},
+  url          = {https://www.sqlite.org/},
+  note         = {Accessed April 2026},
+}
+
+@inproceedings{duckdb2019,
+  author    = {Mark Raasveldt and Hannes M{\"u}hleisen},
+  title     = {{DuckDB}: an Embeddable Analytical Database},
+  booktitle = {Proceedings of the 2019 International Conference on Management of Data ({SIGMOD})},
+  pages     = {1981--1984},
+  year      = {2019},
+  doi       = {10.1145/3299869.3320212},
+}
+
+@article{grootendorst2022,
+  author    = {Maarten Grootendorst},
+  title     = {{BERTopic}: Neural Topic Modeling with a Class-Based {TF-IDF} Procedure},
+  journal   = {arXiv preprint arXiv:2203.05794},
+  year      = {2022},
+}
+
+@inproceedings{dementieva2024,
+  author    = {Daryna Dementieva and Daniil Moskovskiy and Nikolay Babakov and Abinew Ali Ayele and Naquee Rizwan and Florian Schneider and Xintong Wang and Seid Muhie Yimam and Dmitry Ustalov and Elisei Stakovskii and Alisa Smirnova and Ashraf Elnagar and Animesh Mukherjee and Alexander Panchenko},
+  title     = {Overview of the Multilingual Text Detoxification Task at {PAN} 2024},
+  booktitle = {Working Notes of the Conference and Labs of the Evaluation Forum ({CLEF} 2024)},
+  series    = {{CEUR} Workshop Proceedings},
+  volume    = {3740},
+  pages     = {2432--2461},
+  year      = {2024},
+}
+
+@inproceedings{tedeschi2021,
+  author    = {Simone Tedeschi and Valentino Maiorca and Niccol{\`o} Campolungo and Francesco Cecconi and Roberto Navigli},
+  title     = {{WikiNEuRal}: Combined Neural and Knowledge-based Silver Data Creation for Multilingual {NER}},
+  booktitle = {Findings of the Association for Computational Linguistics: {EMNLP} 2021},
+  publisher = {Association for Computational Linguistics},
+  address   = {Punta Cana, Dominican Republic},
+  pages     = {2521--2533},
+  year      = {2021},
+  doi       = {10.18653/v1/2021.findings-emnlp.215},
+}
+
+@inproceedings{reimers2019,
+  author    = {Nils Reimers and Iryna Gurevych},
+  title     = {{Sentence-BERT}: Sentence Embeddings using {Siamese} {BERT}-Networks},
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing ({EMNLP-IJCNLP})},
+  publisher = {Association for Computational Linguistics},
+  address   = {Hong Kong, China},
+  pages     = {3982--3992},
+  year      = {2019},
+  doi       = {10.18653/v1/D19-1410},
+}
+
+@inproceedings{reimers2020,
+  author    = {Nils Reimers and Iryna Gurevych},
+  title     = {Making Monolingual Sentence Embeddings Multilingual using Knowledge Distillation},
+  booktitle = {Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing ({EMNLP})},
+  publisher = {Association for Computational Linguistics},
+  pages     = {4512--4525},
+  year      = {2020},
+  doi       = {10.18653/v1/2020.emnlp-main.365},
+}
+
+@misc{claudesonnet2026,
+  author       = {{Anthropic}},
+  title        = {Introducing {Claude Sonnet 4.6}},
+  howpublished = {Anthropic},
+  year         = {2026},
+  url          = {https://www.anthropic.com/news/claude-sonnet-4-6},
+  note         = {Large language model. Announced 17 February 2026. Accessed: 2026-06-24},
+}

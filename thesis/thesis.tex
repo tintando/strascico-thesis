@@ -1,0 +1,100 @@
+% !TeX encoding = UTF-8
+
+\documentclass[binding=0.6cm, english]{sapthesis}
+
+\usepackage{microtype}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, shapes.symbols,
+                fit, calc, backgrounds, decorations.pathreplacing}
+
+% --- Float placement tuning ---
+\usepackage[section]{placeins}
+\renewcommand{\topfraction}{0.9}      % up to 90% of a page may be top floats
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}    % require only 7% text on a mixed page
+\renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+
+% --- Thesis metadata ---
+\title{Edits, Deletions, and Restrictions: Making Telegram's Content Dynamics Observable at Scale}
+\author{Gabriel Alonso Bustamante}
+\IDnumber{1983278}
+\course{Applied Computer Science and Artificial Intelligence}
+\courseorganizer{Dipartimento di Informatica}
+\AcademicYear{2025/2026}
+\advisor{Prof. Alessandro Mei}
+\authoremail{bustamante.1983278@studenti.uniroma1.it}
+\copyyear{2026}
+\coadvisor{Dr. Alberto M. Mongardini}
+\thesistype{Internship report}
+\examdate{23 July 2026}
+\examiner{Prof. Casalicchio}
+\examiner{Prof. Cenciarelli}
+\examiner{Prof. Masi}
+\examiner{Prof. Mei}
+
+% --- Hyperref setup ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue,
+}
+
+% --- Code listing style ---
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+}
+
+\begin{document}
+
+\frontmatter
+
+% Suppress word-splitting (hyphenation) on the title page
+\begingroup
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\maketitle
+\endgroup
+
+% \dedication{To ...}  % uncomment to add a dedication
+
+\include{frontmatter/abstract}
+\include{frontmatter/acknowledgments}
+
+\tableofcontents
+
+\mainmatter
+
+\include{chapters/introduction}
+\include{chapters/background}
+\include{chapters/methodology}
+\include{chapters/results}
+\include{chapters/conclusion}
+
+\appendix
+\include{chapters/appendix_edit_prompt}
+
+\backmatter
+
+\bibliographystyle{sapthesis}
+\bibliography{bibliography/references}
+
+\end{document}

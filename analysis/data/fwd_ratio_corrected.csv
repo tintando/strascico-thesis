@@ -1,0 +1,6 @@
+metric,value
+raw forward ratio (is_forwarded / all msgs),0.1829
+auto-mirror duplicate forwards (count),29553651.0
+auto-mirror as share of all forwards,0.3401
+editorial forward ratio (auto-mirror removed),0.1207
+"correction (raw - editorial, ratio points)",0.0622

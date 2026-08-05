@@ -1,0 +1,46 @@
+/* ============ pinned: pinned-message bar ============
+   Snippet:
+     <div class="pinned"><i class="pbar"></i>
+       <div class="pcol">
+         <span class="ptitle">Pinned message</span>
+         <span class="ptext">The one line that must survive the talk.</span>
+       </div>
+       <span class="pclose"></span></div>
+
+   Source (tdesktop v6.9.3 ui/chat/pinned_bar.cpp + message_bar.cpp,
+   chat_helpers.style, chat.style): full-width bar, historyReplyHeight 49px
+   (98px here), bg = historyPinnedBg #1B2734 night / msgInBg #FFFFFF day
+   (--pinned-bg), 1px shadow below. Left accent = msgReplyBarSize 2x36px
+   (4x72px here) in msgInReplyBarColor (--replybar); it segments when several
+   messages are pinned (deck shows the single-pin form). Title line =
+   lng_pinned_message "Pinned message", semiboldTextStyle in
+   windowActiveTextFg (--active-text); second line = the message preview in
+   windowFg (--ink), one line, elided. Right button = close (single pin) /
+   list icon (multiple). No pin glyph anywhere in the bar.
+
+   Deck addition: `.pinned.two` lets the preview run to two lines and grows the
+   bar to fit, for a definition too long to elide at the 4:3 width. Telegram
+   itself always elides to one line; use it only when the elided line would
+   drop information the slide needs. */
+
+.pinned {
+  display: flex; align-items: center; gap: 20px;
+  height: 98px; padding: 0 24px;
+  background: var(--pinned-bg); border-bottom: 1px solid var(--line);
+}
+.pinned .pbar { flex: none; width: 4px; height: 72px; border-radius: 2px; background: var(--replybar); }
+.pinned .pcol { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.pinned .ptitle { font-weight: 600; font-size: 26px; color: var(--active-text); }
+.pinned .ptext { font-size: 26px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pinned.two { height: auto; min-height: 98px; padding-top: 12px; padding-bottom: 12px; }
+.pinned.two .ptext {
+  white-space: normal; display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; line-clamp: 2; line-height: 1.25;
+}
+.pinned .pclose { flex: none; position: relative; width: 32px; height: 32px; }
+.pinned .pclose::before, .pinned .pclose::after {
+  content: ""; position: absolute; left: 4px; top: 15px;
+  width: 24px; height: 2.5px; border-radius: 2px; background: var(--ink-2);
+}
+.pinned .pclose::before { transform: rotate(45deg); }
+.pinned .pclose::after { transform: rotate(-45deg); }

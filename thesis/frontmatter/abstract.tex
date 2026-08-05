@@ -1,0 +1,7 @@
+\begin{abstract}
+
+Public Telegram research corpora are snapshots: they record each channel once and miss the edits, deletions, and metadata changes that follow. This thesis presents TGDataset2, built by a single-worker scraper that repeatedly revisits public channels, recurses into their discussion groups, and on each visit detects edits and deletions and snapshots channel metadata, all within Telegram's rate limits on one machine.
+
+The corpus trades breadth for depth: $12{,}065$ channels revisited over time and $475$ million messages, adding the edit (with before-and-after text), deletion, and longitudinal-metadata layers that no prior general-purpose corpus collected, together with a structured engagement-and-comment surface. These layers correct readings taken from the raw flags (the raw edit flag alone over-counts genuine editing roughly tenfold) and drive a method-led showcase on the 2026 US/Israel--Iran war.
+
+\end{abstract}

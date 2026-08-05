@@ -1,0 +1,4 @@
+,posts,share
+comments disabled (replies_count NULL),31196240,0.4644
+"enabled, empty (= 0)",24703610,0.3678
+"enabled, has comments (> 0)",11272272,0.1678

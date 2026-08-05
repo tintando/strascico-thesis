@@ -1,0 +1,19 @@
+/* ============ figslot: full-width figure slot, the LAST RESORT ============
+   Snippets:
+     <div class="figslot"><img src="assets/fig/name.png" alt="…"></div>
+     placeholder while the figure is regenerated:
+     <div class="figslot">fig N · short caption<br>dark-native regen pending</div>
+
+   Not a Telegram element. A figure should arrive as a MESSAGE when possible:
+   an attachment inside a bubble (snippet in bubble.css); this bare spanning
+   slot is only for a figure that genuinely needs the full slide width.
+   Either way the image is a transparent-background
+   dark-native regen, or sits on a white "attachment" card, so it holds in
+   both themes. The dashed border doubles as the empty-slot placeholder. */
+
+.figslot {
+  border: 2px dashed var(--line); border-radius: 12px; display: grid; place-items: center;
+  color: var(--ink-2); font-family: var(--mono); font-size: 18px; text-align: center;
+  padding: 20px; gap: 6px; align-content: center; min-height: 0; height: 100%;
+}
+.figslot img { max-width: 100%; max-height: 100%; }

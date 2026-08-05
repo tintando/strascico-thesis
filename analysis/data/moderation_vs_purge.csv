@@ -1,0 +1,3 @@
+bucket,n,mean_tox,median_tox,pct_toxic,url_share,median_len
+moderation (root survives),8000,0.24091031067685617,0.000874397752340883,0.2415,0.009,56.0
+thread-purge (root deleted),8000,0.19260069687770193,0.000731669832020998,0.19225,0.004,51.0

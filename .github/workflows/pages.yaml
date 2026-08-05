@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+---
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "presentation/**"
+      - ".github/workflows/pages.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and never cancel one in flight: a half-finished
+# Pages deploy would leave the published deck broken.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: presentation/deploy/package-lock.json
+
+      - run: npm ci
+        working-directory: presentation/deploy
+
+      # Runs before the build so base_url is available to it.
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      # SITE_URL fills the canonical link and the og: tags. Without it the
+      # build falls back to the deck.example.com placeholder.
+      - run: node build.mjs
+        working-directory: presentation/deploy
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: presentation/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

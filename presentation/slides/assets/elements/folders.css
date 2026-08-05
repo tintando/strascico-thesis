@@ -1,0 +1,11 @@
+/* ============ folders: chat folder tabs (cohorts / filtered views) ============
+   Snippet:
+     <div class="folders"><span>All</span><span class="on">Cohort A</span><span>Cohort B</span></div>
+
+   Source: tdesktop chat folders. Active tab = accent + underline; the deck
+   uses its hero blue (--blue) for "ours/system", a documented deviation from
+   the in-app night accent #5288C1. */
+
+.folders { display: flex; gap: 30px; border-bottom: 1px solid var(--line); font-size: 23px; width: fit-content; }
+.folders span { padding: 6px 4px 12px; color: var(--ink-2); }
+.folders .on { color: var(--blue); border-bottom: 3px solid var(--blue); font-weight: 600; }

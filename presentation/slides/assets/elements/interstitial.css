@@ -1,0 +1,26 @@
+/* ============ interstitial: channel restriction notice ============
+   Snippet:
+     <div class="interstitial">Unfortunately, this channel can't be displayed
+     on Telegram apps downloaded from the Google Play Store.</div>
+
+   Source: the sentence is a SERVER string, clients show the API's
+   restrictionReason verbatim (pass-through verified in tdesktop v6.3.10
+   data_peer.cpp; the reason arrives on the channel/user constructor,
+   core.telegram.org `restrictionReason`). Quote real wording, don't invent:
+   the deck's strings are raw captured values from the corpus DB (verbatim
+   list + observed platform/reason taxonomy: ../../../../thesis, ch. 4; note the
+   permanent-ban strings use the curly U+2019 apostrophe in "can’t", the
+   store-policy strings a straight one).
+   Styling is the deck's amber "restricted" legend; the
+   real clients show plain text on the empty chat; a slide needs the object
+   to carry it.
+   Projector design values: on light themes the card is solid pale amber
+   (--interstitial-bg; the old .07 alpha let the wallpaper bleed through the
+   text) and the ink is a darker amber (--interstitial-ink; --amber itself is
+   only 3.2:1 on white and stays untouched for poll bars etc.); the border is
+   2px so the amber frame survives at distance. */
+
+.interstitial {
+  border: 2px solid var(--amber); color: var(--interstitial-ink); background: var(--interstitial-bg);
+  border-radius: 12px; padding: 14px 22px; font-size: 24px; width: fit-content;
+}

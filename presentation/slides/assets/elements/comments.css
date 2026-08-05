@@ -1,0 +1,134 @@
+/* ============ comments: channel-post discussion footer ============
+   Snippets:
+     comment count (up to 3 recent-commenter userpics, count label, chevron),
+     the bar is the LAST child of the bubble, after the meta:
+     <div class="bubble"><span class="sender p5">The News</span>Post text.
+       <span class="meta">20:12</span>
+       <div class="comments">
+         <span class="cavs"><span class="cav p7">K</span><span class="cav p6">M</span></span>
+         <span class="clabel">7 comments</span>
+         <span class="cchev"></span>
+       </div>
+     </div>
+     zero state (speech-bubble icon instead of userpics; verbatim string):
+     <div class="comments"><span class="cico"></span>
+       <span class="clabel">Leave a comment</span><span class="cchev"></span></div>
+     unread-comments dot, right after the label:
+     … <span class="clabel">48 comments</span><span class="cdot"></span> …
+     ghost variant, inside a .bubble.ghost, as a sibling AFTER .was/.gone,
+     the footer renders as an outline: dashed separator, hollow dashed
+     userpics (no initials), ghost-gray label and chevron:
+     <div class="bubble ghost">
+       <span class="was">…hidden footprint…</span>
+       <span class="gone">message deleted <span class="meta">detected on visit 3</span></span>
+       <span class="comments">
+         <span class="cavs"><span class="cav"></span><span class="cav"></span><span class="cav"></span></span>
+         <span class="clabel">48 comments</span>
+         <span class="cchev"></span>
+       </span>
+     </div>
+
+   Source (tdesktop v6.9.3 / lib_ui@742640cb): Message::paintCommentsButton,
+   history/view/history_view_message.cpp:2270-2393, drawn when a channel post
+   has a linked discussion group; a strip of historyCommentsButtonHeight 40px
+   carved off the bubble bottom, full bubble width, bottom corners following
+   the bubble's own rounding (bottomRippleMask :3394-3461). Metrics
+   ui/chat/chat.style:708-715; anatomy in paint order:
+   - separator: lineWidth 1px in msgDateFg at 0.3 opacity, one lineWidth
+     above the strip (history_view_message.cpp:2039-2044)
+   - up to 3 recent-commenter userpics (kMaxRecentRepliers,
+     history/history_item_components.h:104): 25px circles, 2px stroke, each
+     advancing size−shift = 25−6 = 19px, first on top; when there are no
+     repliers, the history_comments speech-bubble icon instead
+   - label: semiboldFont 13px in msgFileThumbLinkInFg (night → lightButtonFg
+     #6AB2F2, day → windowActiveTextFg #168ACD = --comments-link); the same
+     pen tints both icons. Strings lang.strings:4832-4834:
+     lng_comments_open_none "Leave a comment",
+     lng_comments_open_count "{count} comment(s)" (count via
+     Lang::FormatCountToShort, so 1.2K-style when large)
+   - right chevron: history_comments_open icon, right-aligned, centered
+   - unread dot: mediaUnreadSize 7px filled circle in msgFileInBg
+     (= --poll-bar), mediaUnreadSkip 5px after the label (:2384-2392)
+   Metrics here are the deck's 2× (80px strip, 50px userpics, 26px label);
+   userpic initials reuse --service-ink (real userpic letters are white in
+   both themes).
+   Deviations:
+   - the hover ripple (msgWaveformInActive @ historyPollRippleOpacity 0.3)
+     is omitted: slides don't hover, and the deck ships no one-shot motion
+   - both icons are CSS-mask glyph stand-ins tinted by the link pen
+   - channel posts render incoming: the deck styles .comments for .bubble
+     only, never .bubble.own
+   - the ghost variant is part of the deck's ONE invented device (the ghost
+     bubble): the outline of a discussion thread that died with its post;
+     real Telegram shows nothing there */
+
+.comments {
+  display: flex; align-items: center;
+  margin: 12px -22px -12px; padding: 0 16px 0 18px; height: 80px;
+  border-top: 2px solid color-mix(in srgb, var(--meta-in) 30%, transparent);
+  font-weight: 600; font-size: 26px; color: var(--comments-link);
+}
+.comments .cavs { display: flex; margin-right: 20px; }
+.comments .cav {
+  position: relative; width: 50px; height: 50px; border-radius: 50%;
+  flex: none; display: grid; place-items: center;
+  font-size: 22px; font-weight: 600; color: var(--service-ink);
+  box-shadow: 0 0 0 4px var(--surface); /* the 2px stroke, in the bubble bg */
+}
+.comments .cav + .cav { margin-left: -12px; } /* advance = size − shift */
+.comments .cav:nth-child(1) { z-index: 3; } /* first userpic on top */
+.comments .cav:nth-child(2) { z-index: 2; }
+.comments .cav:nth-child(3) { z-index: 1; }
+.comments .cav.p1 { background: var(--peer1); }
+.comments .cav.p2 { background: var(--peer2); }
+.comments .cav.p3 { background: var(--peer3); }
+.comments .cav.p4 { background: var(--peer4); }
+.comments .cav.p5 { background: var(--peer5); }
+.comments .cav.p6 { background: var(--peer6); }
+.comments .cav.p7 { background: var(--peer7); }
+.comments .cav.p8 { background: var(--peer8); }
+.comments .cico {
+  width: 44px; height: 40px; margin-right: 20px; flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 40'%3E%3Cpath d='M8 0h28a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H16l-9 8v-8H8a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 40'%3E%3Cpath d='M8 0h28a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H16l-9 8v-8H8a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.comments .cchev {
+  margin-left: auto; width: 18px; height: 30px; flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 30'%3E%3Cpath d='M0 4 4 0l14 15L4 30 0 26l11-11Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 30'%3E%3Cpath d='M0 4 4 0l14 15L4 30 0 26l11-11Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+.comments .cdot {
+  width: 14px; height: 14px; border-radius: 50%; flex: none;
+  background: var(--poll-bar); margin-left: 10px;
+}
+
+/* ghost variant: the outline of the thread that died with the post. The
+   ghost's grid overlays .was/.gone in row 1; a .comments sibling placed
+   after them lands in row 2, visible, in the ghost's gray. */
+.bubble.ghost .comments {
+  color: var(--ghost);
+  border-top: 3px dashed var(--ghost); /* matches the ghost bubble's projector dash weight */
+  margin: 12px -20px -12px; /* horizontal: counters the ghost's reduced 20px
+    padding (the live footer's -22px counters the live bubble's). Bottom stays
+    -12px, NOT -10px: the ghost is a grid, and a grid adds the bubble's bottom
+    padding after the footer's margin box instead of letting the negative
+    margin swallow it (block flow does); -12px makes the height sum match the
+    live bubble exactly, so the beat pair 02→03 does not shift the messages
+    below. The 2px overhang sits in the footer's empty bottom space. */
+}
+/* ghost userpics keep the live overlap, but the knockout gap can't be a
+   painted ring (the circles are transparent over an arbitrary wallpaper),
+   so each rear circle instead masks a hole where the circle in front sits:
+   front circle center is at −13px (advance 38px − radius 25px), gap 4px */
+.bubble.ghost .comments .cav {
+  background: transparent; border: 3px dashed var(--ghost);
+  box-shadow: none;
+}
+.bubble.ghost .comments .cav + .cav {
+  margin-left: -12px;
+  -webkit-mask: radial-gradient(circle at -13px 50%, transparent 28px, #000 29px);
+          mask: radial-gradient(circle at -13px 50%, transparent 28px, #000 29px);
+}
+.bubble.ghost .comments .cdot { display: none; }

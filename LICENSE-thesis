@@ -1,0 +1,35 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2026 Gabriel Alonso Bustamante
+
+This license applies to the contents of `thesis/`: the thesis text, its figures,
+and the built PDF. The code in `analysis/` and `presentation/` is licensed
+separately under the MIT License; see LICENSE.
+
+You are free to:
+
+  Share  - copy and redistribute the material in any medium or format
+  Adapt  - remix, transform, and build upon the material for any purpose,
+           even commercially
+
+under the following terms:
+
+  Attribution - You must give appropriate credit, provide a link to the license,
+  and indicate if changes were made. You may do so in any reasonable manner, but
+  not in any way that suggests the licensor endorses you or your use.
+
+  No additional restrictions - You may not apply legal terms or technological
+  measures that legally restrict others from doing anything the license permits.
+
+Notices:
+
+  This is a human-readable summary of, and not a substitute for, the license.
+  The full legal text is at:
+
+      https://creativecommons.org/licenses/by/4.0/legalcode
+
+  Third-party material quoted or reproduced in the thesis (figures, tables and
+  excerpts attributed to other authors) remains under its own terms and is not
+  covered by this license. The vendored Sapienza thesis class (sapthesis.cls,
+  sapthesis.bst) and the Sapienza logo are the property of Sapienza University of
+  Rome and are redistributed here under the terms on which they are published.

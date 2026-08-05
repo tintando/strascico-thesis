@@ -1,0 +1,30 @@
+[project]
+name = "strascico-analysis"
+version = "1.0.0"
+description = "Analysis notebooks behind the strascico thesis results chapter"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "matplotlib>=3.9",
+    "seaborn>=0.13",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "jupyterlab>=4.2",
+    "ipykernel>=6.29",
+]
+
+[project.optional-dependencies]
+# Right-to-left channel titles on a couple of axes (Persian, Arabic, Hebrew).
+# Without these, `_shared.shape()` passes the label through unchanged and the
+# glyphs render disjoint and left-to-right; nothing else is affected.
+rtl = [
+    "arabic-reshaper>=3.0",
+    "python-bidi>=0.4",
+]
+
+# Deliberately absent: torch, sentence-transformers, bertopic, detoxify. The
+# topic assignments, sentence embeddings, toxicity scores and edit labels those
+# produced are frozen inputs to these notebooks, not something they recompute,
+# so reading the analysis does not need a CUDA stack. Where a section depends on
+# such an input, it says so and cites the model that produced it.

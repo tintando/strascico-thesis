@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TGDataset2 Slides</title>
+<!-- Blue rounded square reading TG, inline rather than a file: the portable
+     build is one self-contained HTML opened over file://, where a separate
+     icon would be a second thing to carry and a 404 whenever it was not
+     carried. This line is the only favicon in the deck; deploy/build.mjs
+     injects none of its own, so dev and both builds show the same tab. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='16' fill='%232EA6FF'/%3E%3Ctext x='16' y='21' font-family='Helvetica,Arial,sans-serif' font-size='13' font-weight='bold' fill='white' text-anchor='middle'%3ETG%3C/text%3E%3C/svg%3E">
+<script>
+  /* apply the theme before first paint: ?theme= overrides (not persisted),
+     else the persisted choice; print ignores the persisted choice and stays
+     Tinted (Night Feed) unless a ?theme= asks for another one, which is how
+     export-pdf.sh renders the deck in all four.
+     Themes = tdesktop's four embedded cards: classic / day / tinted / night;
+     "tinted" is the attribute-less default. nf.theme4 supersedes the old
+     two-value nf.theme key (whose 'day' meant the classic palette). */
+  try {
+    var q = new URLSearchParams(location.search);
+    var t = q.get('theme') || localStorage.getItem('nf.theme4');
+    if (!t && localStorage.getItem('nf.theme') === 'day') t = 'classic';
+    if ((t === 'classic' || t === 'day' || t === 'night') && (!q.has('print') || q.get('theme')))
+      document.documentElement.dataset.theme = t;
+    /* aspect ratio, same pattern: ?ratio= overrides, else the persisted
+       choice; 16:9 is the attribute-less default. Print honours only an
+       explicit ?ratio=, so export-pdf.sh stays 16:9 unless asked. */
+    var r = q.get('ratio') || (!q.has('print') && localStorage.getItem('nf.ratio'));
+    if (r === '4:3' || r === '43' || r === '4x3')
+      document.documentElement.dataset.ratio = '43';
+  } catch (e) {}
+</script>
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body>
+<aside id="rail">
+  <header>
+    <b>Making Telegram's content dynamics observable</b>
+    <small>edits, deletions, restrictions · TGDataset2 · bachelor thesis defense</small>
+  </header>
+  <nav id="rows"></nav>
+  <footer>
+    <div id="themes" role="group" aria-label="theme: Telegram's four embedded themes, T cycles">
+      <button type="button" data-t="classic" title="Classic: the default light palette (green own bubbles)">Classic</button>
+      <button type="button" data-t="day" title="Day: day-blue.tdesktop-theme (blue own bubbles)">Day</button>
+      <button type="button" data-t="tinted" title="Tinted: night.tdesktop-theme, the deck's Night Feed default">Tinted</button>
+      <button type="button" data-t="night" title="Night: night-green.tdesktop-theme">Night</button>
+    </div>
+    <div id="ratio" role="group" aria-label="aspect ratio: 16:9 or 4:3, R toggles">
+      <button type="button" data-r="169" title="16:9 widescreen, slides at 1280x720">16:9</button>
+      <button type="button" data-r="43" title="4:3 projector, slides at 960x720">4:3</button>
+    </div>
+    <div id="export">
+      <button id="selAll" type="button" title="tick every slide">all</button>
+      <button id="selNone" type="button" title="untick every slide">none</button>
+      <button id="exportBtn" type="button" title="print the ticked slides to PDF">⎙ export PDF</button>
+    </div>
+    <span class="hint keys">←/→ or ↑/↓ or scroll navigate · S sidebar · T theme · R ratio · F fullscreen · tick rows to pick PDF pages</span>
+    <span class="hint touch">swipe to move · pinch to zoom · tap a row to jump</span>
+  </footer>
+</aside>
+<!-- phone chrome: the rail is a drawer below 900px, so it needs a way in
+     (#menu), a way out (#scrim), and the hud carries the nav buttons that
+     still work while the slide is zoomed in (a drag is a pan then, not a
+     swipe). All three are hidden above the breakpoint. -->
+<div id="scrim"></div>
+<button id="menu" type="button" aria-label="slides">☰</button>
+<main id="stagewrap"><div id="stage"></div></main>
+<div id="hud">
+  <button id="prev" type="button" aria-label="previous slide">‹</button>
+  <button id="next" type="button" aria-label="next slide">›</button>
+</div>
+<script src="assets/deck.js"></script>
+</body>
+</html>

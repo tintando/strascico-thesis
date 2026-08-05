@@ -1,0 +1,22 @@
+/* ============ divider: the unread-messages bar (section pivot) ============
+   Snippet (spans the thread):
+     <div class="divider">Unread messages</div>
+
+   Source: tdesktop v6.3.10 unread bar, full-width, semibold, centered
+   (chat.style: historyUnreadBarHeight 32px, historyUnreadBarFont semiboldFont):
+   - bg   = historyUnreadBarBg #182433 night / #FCFBFA day (--unread-bg)
+   - text = historyUnreadBarFg #FFFFFF night / #538BB4 day (--unread-ink)
+   - edge = historyUnreadBarBorder: transparent night / shadowFg #00000018 day
+     (--unread-line)
+   String "Unread messages" = lng_unread_bar in lang.strings; the deck puts
+   its own count-style line in the same voice.
+   The deck's class name for this device is .divider; the thread grammar
+   (.thread > .divider spans) and the docs refer to it by that name. */
+
+.divider {
+  display: block; width: 100%;
+  background: var(--unread-bg); color: var(--unread-ink);
+  border-top: 1px solid var(--unread-line); border-bottom: 1px solid var(--unread-line);
+  text-align: center; font-weight: 600; font-size: 21px; line-height: 1.3;
+  padding: 10px 20px;
+}

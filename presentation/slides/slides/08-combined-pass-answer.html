@@ -1,0 +1,51 @@
+<!-- ============ 8 · THE COMBINED PASS · THE ANSWER ============ -->
+<section class="slide" data-title="Match, or short" data-summary="match, or walk backwards">
+  <div class="shead">
+    <span class="av">TG</span>
+    <div class="ch">
+      <span class="t">Count first, then <em>scan</em></span>
+      <span class="sub">the combined pass · one cheap question per visit</span>
+    </div>
+    <span class="visit">visit 8 of 16</span>
+  </div>
+  <div class="sbody thread">
+    <!-- beat 2, now its own visit (6b→7 renumbering): the opening exchange has
+         scrolled off the top.
+         The pinned bar keeps the definition of "the count" in view; below it the
+         two answers a visit can get, side by side: the event as a service line
+         on top, the move as the message under it. -->
+    <div class="pinned two"><i class="pbar"></i>
+      <div class="pcol">
+        <span class="ptitle">Pinned message</span>
+        <span class="ptext">the count: how many messages the channel says it holds vs how many we hold</span>
+      </div>
+      <span class="pclose"></span></div>
+    <div class="cols split">
+      <div class="thread">
+        <div class="caveat">counts match</div>
+        <div class="bubble">No messages were deleted, anywhere. <br> We re&#8209;read the <b>last N for edits</b>.
+          <span class="meta">20:41</span>
+        </div>
+      </div>
+      <div class="thread">
+        <div class="caveat">count short</div>
+        <div class="bubble own">The gap says <b>exactly how many</b> vanished. We <b>walk backwards</b> and find them. <br> We check for edits along the way.
+          <span class="meta">20:41</span>
+        </div>
+      </div>
+    </div>
+    <div class="caveat"><span>No exact timestamps,</span> <span>but 12,065 channels, not 13.</span></div>
+  </div>
+  <aside class="notes">
+    Telegram answers with the channel's total message count. We fetch the new
+    messages first, then compare what we hold (including messages from previous
+    visits) against what Telegram reports. If the two counts match, nothing was
+    deleted anywhere in that channel. If the count is short, the gap says
+    exactly how many vanished, and only then do we pay for a wide scan, walking
+    backwards until each one is found. To catch edits, in the case of no
+    deletions we re-fetch the last **N** messages, while in the other case we
+    piggyback off the re-fetch needed to find the deleted messages. There is a
+    trade-off: we lose exact timestamps and get detection time instead. In
+    exchange, twelve thousand channels, not thirteen.
+  </aside>
+</section>

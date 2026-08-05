@@ -1,0 +1,387 @@
+/* ============ Night Feed design system ============
+   The Telegram device vocabulary lives in elements/, one file per device,
+   each headed by its copyable snippet and the authoritative tdesktop/lib_ui
+   source it was verified against (see elements/README.md). This file holds
+   only the viewer: stage, rail, channel header, thread grammar, print.
+   Tokens for BOTH themes: elements/tokens.css. */
+
+@import url("elements/tokens.css");
+@import url("elements/bubble.css");
+@import url("elements/comments.css");
+@import url("elements/fwd.css");
+@import url("elements/replyq.css");
+@import url("elements/blockquote.css");
+@import url("elements/pre.css");
+@import url("elements/reactions.css");
+@import url("elements/poll.css");
+@import url("elements/location.css");
+@import url("elements/video.css");
+@import url("elements/stub.css");
+@import url("elements/chcard.css");
+@import url("elements/profile.css");
+@import url("elements/folders.css");
+@import url("elements/interstitial.css");
+@import url("elements/pinned.css");
+@import url("elements/divider.css");
+@import url("elements/service.css");
+@import url("elements/typing.css");
+@import url("elements/stat.css");
+@import url("elements/figslot.css");
+
+@font-face { font-family: "Inter"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-style: normal; font-display: swap;
+  src: url("../fonts/inter-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("../fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; font-display: swap;
+  src: url("../fonts/jetbrains-mono-latin-500-normal.woff2") format("woff2"); }
+
+/* light-theme viewer chrome (tokens live in elements/tokens.css) */
+[data-theme="classic"] .row .num, [data-theme="classic"] .shead .av,
+[data-theme="day"] .row .num, [data-theme="day"] .shead .av { color: #000000; }
+
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--ground); font-family: var(--sans); color: var(--ink);
+  overflow: hidden; display: flex;
+  height: 100dvh; /* a phone's collapsing address bar must not crop the stage */
+}
+
+/* ---- stage: slides are authored at 1280x720 and scaled to the viewport ---- */
+/* touch-action: none: the stage's gestures (swipe, pinch, pan, double tap)
+   are deck.js's; without this the browser also pans and double-tap-zooms the
+   page underneath them */
+#stagewrap { flex: 1; position: relative; min-width: 0; touch-action: none; }
+#stage { position: absolute; inset: 0; display: grid; place-items: center; }
+.slide {
+  width: 1280px; height: 720px; background: var(--slide);
+  /* the slide is always a stacking context, so a bubble's tail flap
+     (z-index:-1, elements/bubble.css) lands between this wallpaper and the
+     bubble. The viewer's scale transform already guarantees that, but print
+     strips transforms, hence the explicit isolation. */
+  isolation: isolate;
+  display: grid; grid-template-rows: auto 1fr;
+  /* minmax(0,…): the header's nowrap title must ellipsize, not inflate the
+     column track past the slide (it would, on any slide narrower than it) */
+  grid-template-columns: minmax(0, 1fr);
+  font-size: 26px; line-height: 1.45; overflow: hidden;
+}
+/* 4:3 (R key / rail switcher / ?ratio=4:3): same 720px height, so the type
+   scale is untouched; the thread just reflows into a 960px column. deck.js
+   keeps its fit math and the print @page in step with this width. */
+html[data-ratio="43"] .slide { width: 960px; }
+html[data-ratio="43"] .thumb { aspect-ratio: 4 / 3; }
+/* Classic is the only theme whose real wallpaper is an image (the doodle
+   pattern over the green gradient); the other three ship flat 1x1-pixel
+   wallpapers,
+   which their --slide colors already are. Not a token: url() in a custom
+   property resolves against the document in Blink, not the defining sheet. */
+[data-theme="classic"] .slide {
+  background-image: url("wallpaper/classic.webp");
+  background-size: cover; background-position: center;
+}
+#stage .slide { position: absolute; display: none; }
+#stage .slide.current { display: grid; }
+.slide.no-head { grid-template-rows: 1fr; }
+#hud {
+  position: fixed; right: 16px; bottom: 10px; font-family: var(--mono);
+  font-size: 13px; color: var(--ink-2); z-index: 2; user-select: none;
+}
+/* phone-only chrome: the drawer's opener, its backdrop, the hud's nav buttons
+   and the touch hint. All of it appears at the breakpoint at the foot of this
+   file; here it is simply off. */
+#menu, #scrim, #hud button, #rail footer .hint.touch { display: none; }
+
+/* ---- sidebar rail: the deck's own chat-list device ---- */
+#rail {
+  width: 252px; flex: none; display: flex; flex-direction: column;
+  background: var(--rail-bg); border-right: 1px solid var(--rail-line);
+}
+body.norail #rail, .fs #rail { display: none; }
+#rail header { padding: 14px 16px 12px; border-bottom: 1px solid var(--rail-line); }
+#rail header b { display: block; font-size: 13px; font-weight: 600; }
+#rail header small { display: block; font-size: 11px; color: var(--rail-sub); margin-top: 2px; }
+#rows { flex: 1; overflow-y: auto; overflow-x: hidden; }
+.row {
+  display: grid; gap: 8px; width: 100%; padding: 10px 12px;
+  background: none; border: 0; border-bottom: 1px solid var(--rail-line);
+  cursor: pointer; text-align: left; color: var(--ink); font-family: var(--sans);
+}
+.row .head { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.row .num {
+  width: 30px; height: 30px; border-radius: 50%; background: var(--own);
+  display: grid; place-items: center; flex: none;
+  font-family: var(--mono); font-size: 13px; font-weight: 500;
+}
+.row .txt { min-width: 0; }
+.row .txt b { display: block; font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .txt small { display: block; font-size: 11px; color: var(--rail-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row.on { background: var(--rail-active); color: var(--rail-active-ink); }
+.row.on .txt small { color: var(--rail-active-sub); }
+.row.on .num { background: rgba(255, 255, 255, .22); color: #FFFFFF; }
+.thumb {
+  position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden;
+  border-radius: 6px; border: 1px solid var(--rail-line); background: var(--slide);
+}
+.thumb .slide { position: absolute; top: 0; left: 0; transform-origin: 0 0; pointer-events: none; }
+#rail footer {
+  border-top: 1px solid var(--rail-line); padding: 10px 12px;
+  display: grid; gap: 8px;
+  /* minmax(0,…): never let a wide row (export button, theme labels) stretch
+     the column past the rail; the flexible children shrink instead */
+  grid-template-columns: minmax(0, 1fr);
+}
+/* theme switcher: tdesktop's four embedded themes; the dots are the client's
+   own settings-card preview colors (window_themes_embedded.cpp) */
+#themes, #ratio { display: flex; gap: 4px; }
+#themes button, #ratio button {
+  flex: 1; min-width: 0; font: 500 10px var(--mono); color: var(--ink); background: var(--own);
+  border: 0; border-radius: 8px; padding: 6px 2px; cursor: pointer;
+  display: grid; gap: 3px; justify-items: center; overflow: hidden;
+}
+#themes button::before {
+  content: ""; width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid rgba(128, 128, 128, .45);
+}
+#themes button[data-t="classic"]::before { background: #EAFFDC; }
+#themes button[data-t="day"]::before     { background: #D7F0FF; }
+#themes button[data-t="tinted"]::before  { background: #5CA7D4; }
+#themes button[data-t="night"]::before   { background: #75BFB5; }
+#themes button.on, #ratio button.on { background: var(--rail-active); color: var(--rail-active-ink); }
+#rail footer .hint { font: 400 10px var(--mono); color: var(--rail-sub); }
+
+/* ---- PDF export: a tick box per row + all/none/export in the footer ---- */
+.row .sel {
+  width: 16px; height: 16px; flex: none; margin-left: auto;
+  border: 1px solid var(--rail-sub); border-radius: 4px;
+  display: grid; place-items: center; font-size: 11px; line-height: 1;
+}
+.row .sel.on { background: var(--blue); border-color: var(--blue); }
+.row .sel.on::before { content: "✓"; color: #FFFFFF; pointer-events: none; }
+.row.on .sel { border-color: var(--rail-active-sub); }
+.row.on .sel.on { background: #FFFFFF; border-color: #FFFFFF; }
+.row.on .sel.on::before { color: var(--rail-active); }
+#export { display: flex; gap: 6px; }
+#export button {
+  font: 500 12px var(--mono); color: var(--ink); background: var(--own);
+  border: 0; border-radius: 8px; padding: 8px 10px; cursor: pointer;
+}
+#export #exportBtn {
+  flex: 1; min-width: 0; text-align: left;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#export button:disabled { opacity: .45; cursor: default; }
+
+/* ---- slide chrome: a Telegram channel header above the thread ---- */
+.shead {
+  background: var(--raised); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 20px;
+  padding: 13px 44px;
+}
+.shead .av {
+  width: 54px; height: 54px; border-radius: 50%; background: var(--own);
+  display: grid; place-items: center; flex: none;
+  font-family: var(--mono); font-size: 21px; font-weight: 500;
+}
+.shead .ch { flex: 1; min-width: 0; }
+.shead .t { display: block; font-weight: 600; font-size: 34px; letter-spacing: -0.01em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.shead .t em { font-style: normal; color: var(--blue); }
+/* .shead.cover (slide 01 only): the channel name is the thesis title in full,
+   so this one header wraps instead of ellipsising and sets its type larger.
+   Every other visit carries the short channel name on a single line: the
+   channel is the same, the cover just says its name out in full once.
+   The cover carries nothing but the avatar and that title: no status line,
+   and no visit counter (the count starts once the deck starts moving), so
+   the title gets the width both of them held. It breaks at its own colon and
+   nowhere else: each half is a .l block with nowrap, so a too-narrow column
+   overflows visibly instead of silently re-wrapping mid-phrase. The 4:3
+   column is 320px narrower, so it steps the type down to fit the longer
+   second line. */
+.shead.cover { padding-top: 22px; padding-bottom: 22px; }
+.shead.cover .t { white-space: normal; overflow: visible; font-size: 46px; line-height: 1.16; }
+.shead.cover .t .l { display: block; white-space: nowrap; }
+html[data-ratio="43"] .shead.cover .t { font-size: 33px; }
+/* the cover's thread is a standing group of four, not a live chat scrolled to
+   its newest message, so it centers in the body instead of stacking from the
+   top the way every other .thread does */
+.shead.cover + .sbody.thread { align-content: center; }
+/* 4:3 trims .sbody's top padding only, which would tilt a centered thread down */
+html[data-ratio="43"] .shead.cover + .sbody { padding-top: 36px; }
+.shead .sub { display: block; font-family: var(--mono); font-size: 16px; color: var(--ink-2); margin-top: 3px; }
+.shead .visit { font-family: var(--mono); font-size: 19px; color: var(--ink-2); }
+.sbody { padding: 36px 44px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; align-content: center; min-height: 0; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 44px; align-items: center; min-height: 0; }
+/* .cols.split: the two columns are parallel branches; a contrasted center
+   rule makes the fork explicit; the margins give the fork air against the
+   messages above and below it */
+.cols.split { position: relative; margin: 16px 0; align-items: start; } /* branches top-align: pills and bubble tops meet across the rule */
+.cols.split::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ink-2); }
+/* parallel branches read symmetric: bubbles fill their column */
+.cols.split .bubble { width: 100%; }
+/* .cols.split.level: the branches render the SAME message two ways, so the
+   columns level to one height. The text side (the interstitial) keeps its
+   natural, text-fitted box and sets the height; the other side's bubble
+   stretches to end on the same bottom line, its .stub stand-in absorbing
+   the difference */
+.cols.split.level { align-items: stretch; }
+.cols.split.level > .thread { grid-template-rows: auto 1fr; }
+.cols.split.level .interstitial { align-self: start; }
+.cols.split.level .bubble { display: flex; flex-direction: column; }
+.cols.split.level .stub { flex: 1; }
+/* ---- thread: Telegram objects stacked as a chat feed. Chat grammar:
+   incoming/ghost bubbles hug the left rail, own bubbles hug the right,
+   service lines (caveat) center, dividers and figures span, and so does
+   a .cols split row (two mini-threads side by side for parallel branches,
+   each keeping the grammar within its own column). ---- */
+.thread { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-content: start; justify-items: start; min-height: 0; }
+/* 4:3 packs threads a little tighter: the narrower column wraps a line or
+   two more, and the tallest 16:9 threads must still clear 720px with air
+   left under the last message (the pinned bar's negative top margin tracks
+   the reduced padding so it stays flush under the channel header) */
+html[data-ratio="43"] .thread { gap: 12px; }
+html[data-ratio="43"] .sbody { padding-top: 24px; }
+html[data-ratio="43"] .thread > .pinned { margin-top: -24px; }
+.thread > .bubble.own { justify-self: end; }
+.thread > .divider, .thread > .figslot, .thread > .pinned, .thread > .cols { justify-self: stretch; }
+/* the pinned bar is chat chrome, not a message: it sits flush under the
+   channel header, edge to edge (cancels the .sbody padding) */
+.thread > .pinned { margin: -36px -44px 0; }
+.thread > .caveat { justify-self: center; }
+/* devices sized with a fixed inline width never outgrow their track: at 16:9
+   they all fit anyway, at 4:3 they clamp instead of being cut off (poll bars
+   are percentages of the poll, so a clamped poll still tells the truth) */
+.sbody .poll, .sbody .pre, .sbody .vid, .sbody .bubble.loc { max-width: 100%; }
+.muted { color: var(--ink-2); }
+.mono { font-family: var(--mono); }
+.notes { display: none; } /* speaker notes never render on the slide itself */
+
+/* ---- speaker-notes panel: deck.js builds #notes inside #stagewrap and N
+   toggles it; the dev viewer opens it freely, the published deck asks for
+   the password first. body.shownotes lowers the stage ceiling and apply()
+   refits the slide below the script. Viewer chrome, so it wears the rail
+   tokens. The header row carries the edit/save/discard/revert buttons, the
+   A-/A+ script size, and the B/I toolbar while a note is being edited.
+   Panel height and script size are lectern settings, not design: deck.js
+   drives --notes-h (the #ngrip drag handle) and --notes-fs (A-/A+) and
+   persists both, so the stage floor and the type follow one variable each. */
+:root { --notes-h: 200px; --notes-fs: 16px; }
+#notes {
+  position: absolute; left: 0; right: 0; top: 0; height: var(--notes-h);
+  background: var(--rail-bg); border-bottom: 1px solid var(--rail-line);
+  padding: 12px 24px 16px; overflow-y: auto; display: none; z-index: 2;
+}
+body.shownotes #notes { display: block; }
+body.shownotes #stage { top: var(--notes-h); }
+/* the drag handle rides the panel's bottom edge as a sibling: inside #notes it
+   would scroll away with a long script */
+#ngrip { display: none; position: absolute; left: 0; right: 0; top: calc(var(--notes-h) - 3px); height: 7px; z-index: 3; cursor: ns-resize; }
+body.shownotes #ngrip { display: block; }
+#ngrip::before {
+  content: ''; position: absolute; left: 50%; top: 2px; transform: translateX(-50%);
+  width: 64px; height: 3px; border-radius: 2px; background: var(--rail-line);
+}
+#ngrip:hover::before, body.ngripping #ngrip::before { background: var(--blue); }
+body.ngripping { cursor: ns-resize; user-select: none; }
+#notes .nhead { display: flex; gap: 6px; align-items: center; max-width: 960px; margin: 0 auto 6px; }
+#notes .nhead b { flex: 1; min-width: 0; font: 500 10px var(--mono); color: var(--rail-sub); }
+#notes .nhead button {
+  flex: none; font: 500 10px var(--mono); color: var(--ink); background: var(--own);
+  border: 0; border-radius: 6px; padding: 4px 8px; cursor: pointer;
+}
+#notes p { display: block; max-width: 960px; margin: 0 auto; font-size: var(--notes-fs); line-height: 1.55; }
+/* only Inter 400/600 ship, so weight alone can't carry emphasis: **bold**
+   takes the accent, with a hairline stroke thickening the glyphs past the
+   600 face, so it reads from a lectern glance mid-talk */
+#notes p b {
+  font-weight: 600; color: var(--blue);
+  -webkit-text-stroke: 0.3px currentColor;
+}
+#notes .held { color: var(--rail-sub); font-family: var(--mono); font-size: 12px; }
+#notes textarea {
+  display: block; width: 100%; max-width: 960px; margin: 0 auto;
+  height: calc(var(--notes-h) - 62px); min-height: 60px;
+  font: 400 var(--notes-fs)/1.55 var(--sans); color: var(--ink); background: var(--raised);
+  border: 1px solid var(--rail-line); border-radius: 8px; padding: 8px 12px;
+  resize: none;
+}
+
+/* ---- empty deck: no fragments in slides/slides/ yet ---- */
+.empty {
+  display: grid; gap: 10px; place-items: center; text-align: center;
+  color: var(--ink-2); font-family: var(--mono); font-size: 15px;
+}
+.empty b { color: var(--ink); font-family: var(--sans); font-size: 22px; font-weight: 600; }
+.empty code { color: var(--blue); }
+
+/* ============ phones: one breakpoint, the viewer only ============
+   Below 900px (a phone either way up, a tablet in portrait; an iPad in
+   landscape stays a desktop and keeps its rail) the rail stops being a
+   layout column and becomes an overlay drawer, and the hud grows the two
+   nav buttons. The slides themselves are untouched: still authored at
+   1280x720, still scaled whole, now also pinch-zoomable (deck.js). */
+@media (max-width: 900px) {
+  #rail {
+    position: fixed; top: 0; bottom: 0; left: 0; z-index: 4;
+    width: min(300px, 86vw); border-right: 1px solid var(--rail-line);
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* after body.norail (same specificity), so opening the drawer always wins */
+  #rail, body.norail #rail { display: none; }
+  body.railopen #rail { display: flex; }
+  body.railopen #scrim { display: block; }
+  #scrim { position: fixed; inset: 0; z-index: 3; background: rgba(0, 0, 0, .55); }
+
+  /* the PDF affordances are the widest things in the rail, and printing is
+     not a phone job: the drawer is for jumping between slides */
+  .row .sel, #export, #rail footer .hint.keys { display: none; }
+  #rail footer .hint.touch { display: block; }
+
+  #menu {
+    position: fixed; z-index: 2; display: grid; place-items: center;
+    top: calc(10px + env(safe-area-inset-top));
+    left: calc(10px + env(safe-area-inset-left));
+    width: 40px; height: 40px; padding: 0; border-radius: 50%;
+    background: var(--raised); color: var(--ink-2);
+    border: 1px solid var(--line); font-size: 15px; cursor: pointer;
+  }
+  #hud {
+    right: auto; left: 0; width: 100%;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+  }
+  #hud button {
+    display: grid; place-items: center;
+    width: 40px; height: 40px; padding: 0 0 3px; border-radius: 50%;
+    background: var(--raised); color: var(--ink-2);
+    border: 1px solid var(--line); font: 400 22px var(--sans); cursor: pointer;
+  }
+}
+
+/* ---- ?print mode on screen: all slides stacked (deck.js adds html.print) ---- */
+html.print body { overflow: auto; display: block; background: var(--slide); }
+/* the drawer's opener and backdrop come back at the 900px breakpoint, and a
+   printing viewport is routinely narrower than that (headless Chrome lays out
+   at 800px), so the phone chrome has to be turned off again here */
+html.print #rail, html.print #hud, html.print #menu, html.print #scrim { display: none; }
+html.print #stagewrap { position: static; }
+html.print #stage { position: static; display: block; }
+html.print #stage .slide { display: grid; position: static; transform: none !important; }
+
+/* ---- print / PDF: one page per slide, backgrounds forced. The theme is
+        whatever <html> carries: ?print drops a persisted one (Night Feed by
+        default) and keeps an explicit ?theme=. ---- */
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  body { background: var(--slide); overflow: visible; display: block; }
+  #stagewrap { position: static; }
+  #stage { position: static; display: block; }
+  #hud, #rail, #menu, #scrim { display: none; }
+  #stage .slide {
+    display: grid; position: static; transform: none !important;
+    break-after: page; print-color-adjust: exact; -webkit-print-color-adjust: exact;
+  }
+}

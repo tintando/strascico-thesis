@@ -1,0 +1,180 @@
+/* ============ bubble: message bubbles: incoming, own, ghost ============
+   Snippets:
+     <div class="bubble">The world speaking. <span class="meta">14:02</span></div>
+     sender name (group messages; incoming ONLY: the real client never names
+     your own bubbles, and hides the name when a message is attached to the
+     previous one from the same sender):
+     <div class="bubble"><span class="sender p5">The News</span>Message text.
+       <span class="meta">14:02</span></div>
+     <div class="bubble own">Our claim. <span class="meta">14:03</span></div>
+     <div class="bubble ghost">message deleted <span class="meta">detected on visit 7</span></div>
+     ghost sized to the message it replaced (hidden copy keeps the footprint):
+     <div class="bubble ghost">
+       <span class="was">The deleted message, verbatim. <span class="meta">14:02</span></span>
+       <span class="gone">message deleted <span class="meta">detected on visit 7</span></span>
+     </div>
+     edit diff, inside one bubble:
+     <div class="bubble"><span class="del">old wording</span> <span class="ins">new wording</span>
+       <span class="meta"><span class="tag-edited">edited</span> 22:47</span></div>
+     figure as attachment, the preferred figure carrier:
+     <div class="bubble"><img src="assets/fig/name.png" alt="…">
+       <span class="meta">fig N · short caption · 22:14</span></div>
+
+   Source (tdesktop v6.9.3 night theme / lib_ui@742640cb day palette):
+   - incoming bg = msgInBg #182533 night / #FFFFFF day (--surface)
+   - own bg      = msgOutBg #2B5278 night / #EFFDDE day (--own)
+   - own text    = historyTextOutFg #E4ECF2 night / #000000 day (--ink-out)
+   - meta        = msgInDateFg / msgOutDateFg (--meta-in / --meta-out)
+   - radii: bubbleRadiusLarge 16px, tail-side corner bubbleRadiusSmall =
+     roundRadiusLarge 6px (ui/chat/chat.style + lib_ui ui/basic.style)
+   - tail: a real protruding flap (icons/bubble_tail.png, 6x10 @1x → 12x20
+     here), tinted msgInBg/msgOutBg, on the bottom outer corner of the LAST
+     message of a same-sender run (history_view_message.cpp
+     countMessageRounding: attached-to-next → small corner, no tail; with a
+     tail the corner itself is square, since the tail curve is the rounding).
+     Deck: every bubble gets a tail unless it carries .attached (= followed
+     by another message from the same voice); ghosts never get one
+   - "edited" tag: lowercase, before the timestamp, in the date color
+     (lng_edited in lang.strings), hence color: inherit inside .meta
+   - sender name: msgNameFont = semiboldFont at body size, exactly one line
+     with no extra gap below (history_view_message.cpp paintFromName), drawn
+     above forwarded headers and reply quotes; incoming only (hasFromName()
+     is false for outgoing). Peer colors: historyPeer1..8NameFg (values in
+     tokens.css); the client uses 7 slots via id % 7, never the yellow one.
+     Deck deviation: the color is assigned per voice, not by id hash, and
+     slots that collide with the accent legend are avoided
+   Deviations:
+   - day bubbles carry a hairline (--bubble-line / --own-line) instead of the
+     real 1px bottom shadow (msgInShadow #748EA229): projector-safe; the
+     tail flap gets a 1px-offset underlay in the same hairline color so it
+     doesn't vanish on white
+   - .bubble.ghost is the deck's ONE invented device: real Telegram shows
+     nothing where a message was deleted. Its 3px dash
+     weight (and the brightened --ghost values in tokens.css) are projector
+     design values: 2px in the wallpaper-hued gray washed out at distance.
+     The dashes are stroked as one path, not a dashed border, so they stay
+     one weight on every side (see .bubble.ghost::before below)
+   - .del/.ins diff view is not Telegram UI; colors follow the deck legend
+     (coral = removed, teal = inserted) */
+
+.bubble {
+  position: relative; /* anchors the tail flap; MUST NOT create a stacking
+    context (no isolation, no z-index): the flap's z-index:-1 tuck relies on
+    sinking into the .slide's stacking context, under this bubble's own
+    background. Inside a bubble-level context it would paint above it. */
+  background: var(--surface); border: 1px solid var(--bubble-line);
+  border-radius: 16px 16px 16px 0; /* tail side square: the flap's curve is the corner */
+  padding: 16px 22px 12px;
+  width: fit-content; max-width: 700px; font-size: 26px;
+}
+/* tail flap. Positioning is relative to the PADDING box (inside the 1px
+   border). Dark themes (no visible border): ::after alone draws the flap in
+   the bubble bg at the silhouette position (tip 12px out, bottom flush with
+   the bubble's outer bottom edge) and tucks BEHIND the bubble (z-index:-1,
+   sinking into the .slide's stacking context, whose isolation deck.css
+   guarantees): every partial-alpha pixel is then either true silhouette
+   anti-aliasing against the wallpaper or hidden under the opaque bubble, so
+   the fractional stage scale can paint no seam (a same-color flap painted ON
+   TOP leaves a 1-unit-dark premultiplied-rounding line down its box edge).
+   Classic and Day add the hairline as an INSIDE stroke, the way the border
+   itself is inside the bubble's edge: ::before paints the same flap in the
+   hairline color at the silhouette position, and ::after (lifted back on
+   top, inset 1px up-and-inward) fills it, leaving a 1px band along the curve
+   and the bottom row exposed. Both ends of that band align with the border
+   by construction: at the flap top it continues the left border column, at
+   the bottom it continues the bottom border row. The strips (the mask's
+   straight 2px reach INTO the bubble, right of the curve) fuse the flap with
+   the square corner and hide the border/fill junction. A filter drop-shadow
+   could not draw the stroke: filters apply before masking, so the mask would
+   clip the shadow away. Suppressed on ghosts and on .attached bubbles. */
+.bubble::before, .bubble::after { content: ""; position: absolute; }
+/* the underlay exists only where the hairline tokens are opaque: in the dark
+   themes (and in print, always Tinted) even a transparent underlay is a real
+   composited layer, and the PDF rasterizer leaks its box edge as a faint
+   line on the wallpaper */
+.bubble::before { content: none; }
+[data-theme="classic"] .bubble::before,
+[data-theme="day"] .bubble::before { content: ""; }
+/* the masks carry one EMPTY viewBox column on the outward side (viewBox 15
+   wide, tail drawn in x=1..15 resp. x=0..14): the PDF rasterizer leaks a
+   masked layer's boundary column as a faint line even where the path has
+   zero alpha, so the outward box edge must be genuinely blank. The boxes
+   are 1px wider to compensate; the drawn geometry is unchanged. */
+.bubble::before {
+  left: -14px; bottom: -1px; width: 15px; height: 20px; background: var(--bubble-line);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M15 0L13 0C13 10 9 17 1 20L15 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M15 0L13 0C13 10 9 17 1 20L15 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+.bubble::after {
+  z-index: -1; /* dark themes: tucked behind the bubble (see above) */
+  left: -14px; bottom: -1px; width: 15px; height: 20px; background: var(--surface);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M15 0L13 0C13 10 9 17 1 20L15 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M15 0L13 0C13 10 9 17 1 20L15 20Z'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+.bubble.own::before {
+  left: auto; right: -14px; background: var(--own-line);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M0 0L2 0C2 10 6 17 14 20L0 20Z'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M0 0L2 0C2 10 6 17 14 20L0 20Z'/%3E%3C/svg%3E");
+}
+.bubble.own::after {
+  left: auto; right: -14px; background: var(--own);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M0 0L2 0C2 10 6 17 14 20L0 20Z'/%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 20'%3E%3Cpath d='M0 0L2 0C2 10 6 17 14 20L0 20Z'/%3E%3C/svg%3E");
+}
+/* light themes: fill on top, inset 1px up-and-inward over the ::before
+   stroke (see the header comment) */
+[data-theme="classic"] .bubble::after,
+[data-theme="day"] .bubble::after { z-index: auto; left: -13px; bottom: 0; }
+[data-theme="classic"] .bubble.own::after,
+[data-theme="day"] .bubble.own::after { left: auto; right: -13px; }
+.bubble.ghost::before, .bubble.ghost::after,
+.bubble.attached::before, .bubble.attached::after { content: none; }
+.bubble.attached { border-radius: 16px 16px 16px 6px; }
+.bubble.own.attached { border-radius: 16px 16px 6px 16px; }
+.bubble .meta { display: block; text-align: right; font-family: var(--mono); font-size: 17px; color: var(--meta-in); margin-top: 6px; }
+.bubble img { display: block; max-width: 100%; border-radius: 8px; } /* figure as attachment */
+.bubble.own { background: var(--own); border-color: var(--own-line); border-radius: 16px 16px 0 16px; color: var(--ink-out); }
+.bubble.own .meta { color: var(--meta-out); }
+.bubble.ghost {
+  background: transparent; border: 0; color: var(--ghost);
+  border-radius: 16px; /* tail-less, like .attached */
+  position: relative;
+  padding: 17px 23px 13px; /* the live bubble's 16/22/12 plus 1px: the outline
+    is drawn inside this box, so a sized ghost keeps the exact outer footprint
+    (and .was text column) of the message it replaced; otherwise the messages
+    below shift between the beats of a pair */
+}
+/* the dashed outline is a stroked path, not a dashed border: Chrome fits a
+   whole number of dashes per border side independently, so a short side (a
+   one-line ghost's left and right runs) collapses into stubs while the long
+   top and bottom keep full dashes, and the outline reads at two weights. One
+   path dashes evenly the whole way round. The mask keeps the color on
+   --ghost, so it still follows the theme. */
+.bubble.ghost::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  width: auto; height: auto; /* the tail ::before is a fixed 15x20 box; reset it */
+  border-radius: inherit; /* clips the stroke's outer half along the same arc,
+    so the corners round cleanly instead of chamfering on the box edge */
+  background: var(--ghost);
+  --ghost-dash: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%25" height="100%25"><rect width="100%25" height="100%25" rx="16" ry="16" fill="none" stroke="white" stroke-width="6" stroke-dasharray="9 9"/></svg>');
+  -webkit-mask-image: var(--ghost-dash); mask-image: var(--ghost-dash);
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+}
+/* ghost meta derives from the ghost color, not --meta-in: the ghost sits on
+   the wallpaper, and on Day's blue wallpaper the incoming meta gray vanishes */
+.bubble.ghost .meta { color: inherit; opacity: .85; }
+/* sized ghost: the invisible .was copy gives the outline the exact footprint
+   of the message that was deleted; .gone centers the label inside it */
+.bubble.ghost:has(.was) { display: grid; }
+.bubble.ghost .was { grid-area: 1 / 1; visibility: hidden; }
+.bubble.ghost .gone { grid-area: 1 / 1; align-self: center; justify-self: center; text-align: center; }
+.bubble.ghost .gone .meta { text-align: center; }
+.bubble .sender { display: block; font-weight: 600; }
+.sender.p1 { color: var(--peer1); }  .sender.p2 { color: var(--peer2); }
+.sender.p3 { color: var(--peer3); }  .sender.p4 { color: var(--peer4); }
+.sender.p5 { color: var(--peer5); }  .sender.p6 { color: var(--peer6); }
+.sender.p7 { color: var(--peer7); }  .sender.p8 { color: var(--peer8); }
+.tag-edited { color: inherit; opacity: .9; }
+.del { color: var(--coral); text-decoration: line-through; text-decoration-thickness: 2px; }
+.ins { color: var(--teal); }

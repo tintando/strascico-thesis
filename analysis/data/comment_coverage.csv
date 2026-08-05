@@ -1,0 +1,6 @@
+,messages,share_of_total
+any reply_to_msg_id,202474310,0.4263
+  ...in a crawled linked group,198167533,0.4173
+  ...top-level (no top_id),108688228,0.2289
+  ...nested (top_id != msg_id),93786068,0.1975
+is_comment flag (unreliable),0,0.0

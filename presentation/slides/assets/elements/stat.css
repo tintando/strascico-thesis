@@ -1,0 +1,9 @@
+/* ============ big-stat: the one number a slide is about ============
+   Snippet:
+     <div class="big-stat" style="font-size:96px; color:var(--blue)">4.2×</div>
+
+   Not a Telegram element, but the deck's data voice: headline
+   statistics are set oversized in mono so they read as evidence from the log.
+   Size and semantic accent are chosen per slide; one per slide at most. */
+
+.big-stat { font-family: var(--mono); font-weight: 500; line-height: 1; }

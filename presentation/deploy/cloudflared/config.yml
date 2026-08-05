@@ -1,0 +1,13 @@
+# Tunnel for the public deck. Self-contained: this file, not
+# ~/.cloudflared/config.yml, is what the container runs with.
+# (Note for CLI work: a `tunnel:` key in ~/.cloudflared/config.yml overrides the
+# tunnel name you pass to `cloudflared tunnel route dns|info`, silently. Run
+# those commands with an explicit --config so they read this file.)
+tunnel: 00000000-0000-0000-0000-000000000000   # your tunnel UUID
+credentials-file: /etc/cloudflared/credentials.json
+no-autoupdate: true
+
+ingress:
+  - hostname: deck.example.com               # your hostname
+    service: http://public:80      # the nginx container on the compose network
+  - service: http_status:404

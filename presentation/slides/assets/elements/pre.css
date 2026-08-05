@@ -1,0 +1,87 @@
+/* ============ pre: monospace code block inside a bubble ============
+   Snippets:
+     <div class="bubble"><span class="sender p7">Sender</span>
+       <div class="pre" style="width:480px">
+         <i>log line one</i><i>log line two</i><i>Done!</i>
+       </div>
+       <span class="meta">20:24</span>
+     </div>
+     perpetual loop (lines cued on an ~8s cycle, then the block clears and
+     starts over; height is reserved, so the loop never reflows the thread):
+     <div class="bubble own">
+       <div class="pre loop" style="width:480px">
+         <i>log line one</i><i>log line two</i><i>Revisiting…</i>
+       </div>
+       <span class="meta">20:31</span>
+     </div>
+
+   Source (tdesktop v6.9.3 / lib_ui@742640cb): pre blocks and blockquotes
+   share one paint path: ValidateQuotePaintCache / FillQuotePaint (lib_ui
+   ui/text/text.cpp) with style def historyQuoteStyle (chat_helpers.style):
+   rounded tinted rect, 3px left accent bar, mono text, copy icon top-right;
+   a header row appears only when a language is tagged. All colors derive
+   from one key per side (EnsurePreCache, tdesktop
+   ui/chat/chat_style.cpp:47-67):
+   text = msgInMonoFg / msgOutMonoFg, bar = monoFg @ 90%, icon = monoFg
+   @ 60%, bg = monoFg @ 12%, EXCEPT dark themes, where the bg is a flat
+   #000000 @ 75% for both sides (chat_style.cpp:767-769). Resolved values:
+   night in #5A8CB7 / out #AED1F3 (bg black @ 75%); day in #4E7391 / out
+   #459866 (bg = the mono color @ 12%). Tokens: --mono-in / --mono-out,
+   --pre-bg-in / --pre-bg-out.
+   Deviations:
+   - metrics scaled 2× like the rest of the library (radius 10px, bar 6px),
+     but the line size is 20px mono, a deck scale between the .meta log size
+     (17px) and the client's message-size mono (26px here, which does not
+     fit the slide-4 thread; 20px measured to fit both slides, 2026-07-13)
+   - no language header row: the deck's logs are untagged, which is the
+     faithful headerless form
+   - .pre.loop is a deck device (a perpetual ambient loop):
+     lines toggle opacity in reserved space on an infinite step-end
+     timeline. The loop runs in the live viewer only: in the ?print view
+     (html.print, still screen media) and in print media the animation is off
+     and every line is visible, so the frozen state reads alone. It is not
+     gated on prefers-reduced-motion: the lines fade in reserved space and
+     nothing moves, and a phone with battery saver on (which asks for reduced
+     motion) would otherwise show a scraper log that never scrapes. */
+
+.pre {
+  position: relative; display: block; overflow: hidden;
+  font-family: var(--mono); font-size: 20px; line-height: 1.5;
+  color: var(--mono-in); background: var(--pre-bg-in);
+  border-radius: 10px; padding: 8px 20px;
+}
+.pre i { display: block; font-style: normal; }
+/* left accent bar, clipped by the block's own radius */
+.pre::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 6px;
+  background: color-mix(in srgb, currentColor 90%, transparent);
+}
+/* copy icon, top-right, masked in currentColor @ .6 (monoFg @ 60%) */
+.pre::after {
+  content: ""; position: absolute; top: 8px; right: 8px;
+  width: 26px; height: 26px; background: currentColor; opacity: .6;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3a2 2 0 0 0-2 2v1h2V5h9v9h-1v2h1a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H9z'/%3E%3Crect x='4' y='8' width='12' height='13' rx='2'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 3a2 2 0 0 0-2 2v1h2V5h9v9h-1v2h1a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H9z'/%3E%3Crect x='4' y='8' width='12' height='13' rx='2'/%3E%3C/svg%3E") 0 0 / 100% 100% no-repeat;
+}
+.bubble.own .pre { color: var(--mono-out); background: var(--pre-bg-out); }
+
+/* ---- .pre.loop: the perpetual log. All lines keep their reserved space;
+   opacity cues them in one by one (≈ .5s / 1.5s / 2.5s / 3.5s / 5s of an 8s
+   cycle), everything clears at ≈ 7.6s, and the cycle restarts. ---- */
+@media screen {
+  .pre.loop i { opacity: 0; animation: 8s step-end infinite; }
+  .pre.loop i:nth-child(1) { animation-name: pre-cue-1; }
+  .pre.loop i:nth-child(2) { animation-name: pre-cue-2; }
+  .pre.loop i:nth-child(3) { animation-name: pre-cue-3; }
+  .pre.loop i:nth-child(4) { animation-name: pre-cue-4; }
+  .pre.loop i:nth-child(5) { animation-name: pre-cue-5; }
+}
+/* ?print stacks the deck on screen (html.print) and is what the PDF button
+   prints from: still screen media, so the loop would run in the printed view.
+   Freeze it there too. */
+html.print .pre.loop i { animation: none; opacity: 1; }
+@keyframes pre-cue-1 { 0% { opacity: 0; }  6.25% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes pre-cue-2 { 0% { opacity: 0; } 18.75% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes pre-cue-3 { 0% { opacity: 0; } 31.25% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes pre-cue-4 { 0% { opacity: 0; } 43.75% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes pre-cue-5 { 0% { opacity: 0; } 62.5%  { opacity: 1; } 95%, 100% { opacity: 0; } }

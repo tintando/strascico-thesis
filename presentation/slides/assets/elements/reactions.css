@@ -1,0 +1,25 @@
+/* ============ reactions: reaction chips under a message ============
+   Snippet (inside a .bubble, after the text; the timestamp goes INSIDE the
+   row: it shares the chips' line, pushed right, as in the real client):
+     <span class="reactions">
+       <span class="reaction chosen">👍 12K</span>
+       <span class="reaction">❤️ 3.4K</span>
+       <span class="meta">14:02</span>
+     </span>
+
+   Source: tdesktop v6.3.10 history_view_reactions.cpp, in-bubble chips:
+   - unchosen: bg = msgFileInBg at kInNonChosenOpacity 0.12 (--reaction-bg),
+     label = msgServiceFg -> msgInServiceFg #71BAFA night / #168ACD day
+     (--service-in)
+   - chosen: bg = solid msgFileInBg (--poll-bar), label = historyFileInIconFg
+     (--chosen-ink): white everywhere except night-green, where the chip is
+     teal #50D4C3 and the label dark #33393F
+   - date: BottomInfo is laid out on the reactions row, bottom-right; if the
+     chips fill the line it wraps below, still right-aligned (flex-wrap +
+     margin-left:auto reproduce both cases)
+   The emoji ban exempts this device. */
+
+.reactions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+.reactions .meta { margin: 0 0 0 auto; align-self: flex-end; }
+.reaction { display: inline-flex; gap: 8px; align-items: center; background: var(--reaction-bg); color: var(--service-in); border-radius: 999px; padding: 5px 16px; font-size: 20px; font-family: var(--mono); }
+.reaction.chosen { background: var(--poll-bar); color: var(--chosen-ink); }

@@ -1,0 +1,40 @@
+/* ============ service (.caveat): centered service message ============
+   Snippet (centers in the thread):
+     <div class="caveat">sample: n = 1,234, what it was drawn from</div>
+   A pill that may wrap carries its clauses in spans, and spans are nowrap, so
+   the only legal break is between them:
+     <div class="caveat"><span>first clause ·</span> <span>second clause</span></div>
+   A pill is one voice: one size, one weight, one color, all the way through.
+
+   Source: tdesktop v6.3.10 service message (like "… changed the group title"):
+   centered pill, semibold (chat.style: msgServiceFont semiboldFont,
+   msgServicePadding 12/3/12/4):
+   - bg   = msgServiceBg #213040D5 night / #517C417F day, greenish over the
+     day wallpaper, that's authentic (--service-bg)
+   - text = msgServiceFg = windowFgActive #FFFFFF, all four themes (--service-ink)
+   Carries caveats and sample notes: the voice of the system, not a speaker.
+   Deck deviation: scaled up (26px, padding 8/27) so a pill reads from the back
+   of the room; 26px semibold is the deck's author size, the same as .sender in
+   a bubble or a poll. The leading is tightened to 1.25 so a wrapped pill
+   doesn't cost a slide its bottom message.
+   The deck's class name for this device is .caveat; the thread grammar
+   (.thread > .caveat centers) and the docs refer to it by that name. */
+
+.caveat {
+  display: block; width: fit-content;
+  background: var(--service-bg); color: var(--service-ink);
+  border-radius: 999px; padding: 8px 27px;
+  font-weight: 600; font-size: 26px; line-height: 1.25; text-align: center;
+}
+/* a pill breaks only where the fragment says it may: between its clause spans */
+.caveat span { white-space: nowrap; }
+
+/* A join pill is the one service line that names a person, and on the cover the
+   people are the content. tdesktop renders name and action in one white; the
+   deck keeps the name (with any role that precedes it) at that full white and
+   greys the action a step, just enough for the name to come first. Same size,
+   same weight throughout: the only difference is that step of white:
+     <div class="caveat"><span class="who">Advisor Alessandro Mei</span>
+       <span class="act">joined the group</span></div> */
+.caveat .who { color: var(--service-ink); }
+.caveat .act { color: color-mix(in srgb, var(--service-ink) 72%, transparent); }

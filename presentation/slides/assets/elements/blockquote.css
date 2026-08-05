@@ -1,0 +1,42 @@
+/* ============ blockquote (.bq): quote formatting inside a message ============
+   Snippet (any bubble; several blocks give a message list-like structure,
+   the way real users format multi-part messages):
+     <div class="bubble"><span class="sender p5">Sender</span>
+       <span class="bq"><b>System:</b> a revisit-and-diff scraper.</span>
+       <span class="bq"><b>Corpus:</b> 474.9 M messages.</span>
+       <span class="meta">21:54</span>
+     </div>
+
+   Source (tdesktop v6.9.3): a messageEntityBlockquote shares the .pre quote
+   paint path (ValidateQuotePaintCache/FillQuotePaint). Colors from
+   EnsureBlockquoteCache + SimpleColorIndexValues (chat_style.cpp:34-45,
+   116-136, 756-765): bar/name/icon = msgReplyBarColor, the same palette
+   keys as the reply quote (--replybar incoming, --replybar-out own), with
+   bg at kDefaultBgOpacity 0.12 and bar at kDefaultOutline1Opacity 0.9
+   (chat_style.h:46-47). Geometry from historyTextStyle.blockquote
+   (chat_helpers.style:1198-1214): padding margins(10,2,20,2), verticalSkip
+   4px, outline 3px, radius 5px, "chat/mini_quote" icon top-right at (4,4).
+   Deviations: metrics scaled ~2× like the rest of the library (bar kept
+   3px, matching .replyq); the corner glyph stands in for the mini_quote
+   icon; peer-colored quotes (coloredQuoteCache: the client tints quotes in
+   colored-name peers' messages with the peer accent) are not reproduced,
+   the same simplification as .replyq; the long-quote expand/collapse
+   chevron is omitted (deck quotes are always short). */
+
+.bq {
+  display: block; position: relative;
+  border-left: 3px solid color-mix(in srgb, var(--replybar) 90%, transparent);
+  background: color-mix(in srgb, var(--replybar) 12%, transparent);
+  border-radius: 10px;
+  padding: 6px 44px 6px 20px;
+  margin: 8px 0;  /* verticalSkip 4px @2x */
+}
+.bq::after {  /* stand-in for the chat/mini_quote corner icon */
+  content: "\201D"; position: absolute; top: 4px; right: 10px;
+  font-size: 30px; line-height: 1; font-weight: 600; color: var(--replybar);
+}
+.bubble.own .bq {
+  border-left-color: color-mix(in srgb, var(--replybar-out) 90%, transparent);
+  background: color-mix(in srgb, var(--replybar-out) 12%, transparent);
+}
+.bubble.own .bq::after { color: var(--replybar-out); }

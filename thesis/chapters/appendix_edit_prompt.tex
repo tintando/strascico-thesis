@@ -1,0 +1,28 @@
+\chapter{Edit-labelling prompt}
+\label{app:edit-prompt}
+
+This appendix reproduces the prompt used to label the $2{,}356$ text-changing edits discussed in Section~\ref{sec:res-edits}. Pairs are labelled in batches of $25$, one model call per batch. For each call the prompt below is filled in by listing the batch's pairs under \texttt{Items:}, one JSON object per pair carrying its \texttt{id}, archived \texttt{before} text, and current \texttt{after} text; the model then returns a JSON array with one label object per pair. The labels are the fixed taxonomy shown; the substantive/non-substantive split reported in the text is then derived from the label, with \texttt{cosmetic} and \texttt{mechanical\_counter} counted as non-substantive and the rest as substantive.
+
+\begin{lstlisting}[numbers=none,caption={Edit-type labelling prompt, as sent to Claude Sonnet~4.6.},captionpos=b,label={lst:edit-prompt}]
+You are annotating EDITS to Telegram posts. For each item you get the BEFORE text (the archived prior version) and the AFTER text (the current version). Assign exactly ONE primary label = the *dominant* kind of change between BEFORE and AFTER. The corpus is multilingual (Russian-heavy, plus Farsi, German, Hebrew, etc.) - judge the change, not the language.
+
+Labels (choose one):
+- cosmetic: spelling/typo, spacing, punctuation, emoji, markup, or hashtag only; meaning unchanged.
+- mechanical_counter: only an auto-updating tally changed (poll votes, reaction/comment/view counts); not an editorial edit.
+- factual_correction: a number, date, name, place, or fact changed to correct or update it (meaning changes).
+- addition: new substantive content, links, promo/CTA, or a status note appended or inserted.
+- removal: substantive content cut or retracted, or the post emptied.
+- tone_rewrite: wording rephrased (soften/harden/restyle) without adding or removing facts.
+- compliance_annotation: a state- or platform-mandated label/disclaimer added or removed (e.g. 'foreign agent', ToS notice).
+- multi: two or more co-equal substantive change types in one edit.
+- other: none of the above.
+
+Also return `note`: <=12 words naming the concrete change.
+
+Output ONLY a JSON array, one object per item, no prose and no markdown fences:
+[{"id": "<id>", "label": "<label>", "note": "<...>"}]
+
+Items:
+{"id": "<channel_id>:<message_id>", "before": "<archived text>", "after": "<current text>"}
+...
+\end{lstlisting}

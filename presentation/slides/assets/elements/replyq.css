@@ -1,0 +1,43 @@
+/* ============ replyq: reply quote inside a bubble ============
+   Snippet:
+     <div class="bubble">
+       <span class="replyq"><b>channel post</b><span>Quoted excerpt…</span></span>
+       …the reply text. <span class="meta">14:06</span>
+     </div>
+
+   Own-bubble variant (the quote sits fine above an attachment; only the
+   accent swaps):
+     <div class="bubble own">
+       <span class="replyq"><b>Sender</b><span>Quoted excerpt…</span></span>
+       <div class="vid">…</div>
+       <span class="meta">caption · 20:31</span>
+     </div>
+
+   Quoting a named voice (deck deviation): add the voice's peer class so the
+   bar and name keep the author's color everywhere, even inside own bubbles
+   (the real client would force msgOutReplyBarColor there; the deck keeps one
+   color per author per theme):
+     <span class="replyq p7"><b>Prior corpora</b><span>Done!</span></span>
+
+   Source: bar + quoted author = msgInReplyBarColor: #429BDB night (tdesktop
+   v6.3.10) / #37A1DE day (lib_ui@2d3c80e, = activeLineFg) (--replybar);
+   inside own bubbles = msgOutReplyBarColor: #65B9F4 night (tdesktop v6.9.3)
+   / #5EB854 day (lib_ui@742640cb) (--replybar-out), quoted text in the
+   own-bubble text color (--ink-out). */
+
+.replyq { display: block; border-left: 3px solid var(--replybar); padding: 2px 14px; margin-bottom: 8px; font-size: 20px; }
+.replyq b { color: var(--replybar); display: block; font-size: 18px; }
+.replyq span { color: var(--ink-2); }
+.bubble.own .replyq { border-left-color: var(--replybar-out); }
+.bubble.own .replyq b { color: var(--replybar-out); }
+.bubble.own .replyq span { color: var(--ink-out); }
+/* peer-voiced quotes: the author keeps their color (scoped to .bubble and
+   placed last so they beat the own-bubble accent above) */
+.bubble .replyq.p1 { border-left-color: var(--peer1); } .bubble .replyq.p1 b { color: var(--peer1); }
+.bubble .replyq.p2 { border-left-color: var(--peer2); } .bubble .replyq.p2 b { color: var(--peer2); }
+.bubble .replyq.p3 { border-left-color: var(--peer3); } .bubble .replyq.p3 b { color: var(--peer3); }
+.bubble .replyq.p4 { border-left-color: var(--peer4); } .bubble .replyq.p4 b { color: var(--peer4); }
+.bubble .replyq.p5 { border-left-color: var(--peer5); } .bubble .replyq.p5 b { color: var(--peer5); }
+.bubble .replyq.p6 { border-left-color: var(--peer6); } .bubble .replyq.p6 b { color: var(--peer6); }
+.bubble .replyq.p7 { border-left-color: var(--peer7); } .bubble .replyq.p7 b { color: var(--peer7); }
+.bubble .replyq.p8 { border-left-color: var(--peer8); } .bubble .replyq.p8 b { color: var(--peer8); }
