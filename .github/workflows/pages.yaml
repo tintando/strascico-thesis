@@ -40,25 +40,17 @@ jobs:
         working-directory: presentation/deploy
 
       # SITE_URL fills the canonical link and the og: tags. Without it the
-      # build falls back to the deck.example.com placeholder. It names the
-      # Cloudflare host even in the copy GitHub Pages serves, so both point
-      # search engines and link previews at the address that stays.
+      # build falls back to the deck.example.com placeholder.
       - run: node build.mjs
         working-directory: presentation/deploy
         env:
-          SITE_URL: https://strascico-thesis.tintan.do
+          SITE_URL: https://strascico-slides.tintan.do
 
       # Cloudflare Pages reads these two from the root of the upload: the
       # response headers nginx.conf sets for the self-hosted deck, and a real
       # 404 page in place of its fallback to index.html.
       - run: cp deploy/pages/_headers deploy/pages/404.html dist/
         working-directory: presentation
-
-      # The same dist/ twice: once in the shape deploy-pages wants, once as a
-      # plain artifact for the Cloudflare job. The first goes with GitHub Pages.
-      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
-        with:
-          path: presentation/dist
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -67,22 +59,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # GitHub Pages, kept until strascico-thesis.tintan.do is verified, then
-  # removed.
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
-
-  # Cloudflare Pages, served at strascico-thesis.tintan.do. The job has no
+  # Cloudflare Pages, served at strascico-slides.tintan.do. The job has no
   # GitHub token permissions at all: it downloads this run's artifact and
   # hands it to wrangler, nothing more. A manual run from another branch, or a
   # run in a fork, skips it rather than overwriting production.
