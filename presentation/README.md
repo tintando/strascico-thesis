@@ -4,7 +4,7 @@ A ten-minute bachelor thesis defense for *Edits, Deletions, and Restrictions: Ma
 
 The thesis is about what happens to Telegram messages after they are posted, so the deck argues in the medium it studies. Every slide is a channel view: a header, then messages in reading order. The world speaks in incoming bubbles on the left, the thesis answers in own bubbles on the right, and a deleted message is a dashed ghost bubble, the one device Telegram lacks, since the real client renders nothing where a message used to be. Sixteen slides, run from one container in development, built to a static site or to one self-contained file.
 
-**Live deck:** <https://strascico-thesis.tintan.do/> **PDF:** [`portable/16-9/deck-classic.pdf`](portable/16-9/deck-classic.pdf), the whole deck in Classic at one page a slide.
+**Live deck:** <https://strascico-slides.tintan.do/> **PDF:** [`portable/16-9/deck-classic.pdf`](portable/16-9/deck-classic.pdf), the whole deck in Classic at one page a slide.
 
 ## Screenshot
 
