@@ -4,7 +4,7 @@ A ten-minute bachelor thesis defense for *Edits, Deletions, and Restrictions: Ma
 
 The thesis is about what happens to Telegram messages after they are posted, so the deck argues in the medium it studies. Every slide is a channel view: a header, then messages in reading order. The world speaks in incoming bubbles on the left, the thesis answers in own bubbles on the right, and a deleted message is a dashed ghost bubble, the one device Telegram lacks, since the real client renders nothing where a message used to be. Sixteen slides, run from one container in development, built to a static site or to one self-contained file.
 
-**Live deck:** <https://tintando.github.io/strascico-thesis/> **PDF:** [`portable/16-9/deck-classic.pdf`](portable/16-9/deck-classic.pdf), the whole deck in Classic at one page a slide.
+**Live deck:** <https://strascico-thesis.tintan.do/> **PDF:** [`portable/16-9/deck-classic.pdf`](portable/16-9/deck-classic.pdf), the whole deck in Classic at one page a slide.
 
 ## Screenshot
 
@@ -43,7 +43,7 @@ slides/slides/         one fragment per slide; order = filename sort
 slides/assets/         deck.css + deck.js, and elements/, the device library
 slides/server/         dependency-free Node server (static, /api/slides, SSE)
 slides/export-pdf.sh   renders deck.pdf via headless Chrome
-deploy/                build.mjs, Dockerfile, nginx.conf, compose.yml
+deploy/                build.mjs, Dockerfile, nginx.conf, compose.yml, pages/ (Cloudflare Pages extras)
 tools/                 speech_time.py, times the script against the 10:00 budget
 ```
 

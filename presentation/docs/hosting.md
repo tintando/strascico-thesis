@@ -1,6 +1,6 @@
 # Hosting the deck
 
-Two ways to get the deck onto a machine that is not this one: publish it behind a Cloudflare tunnel, or hand over a single HTML file.
+Two ways to get the deck onto a machine that is not this one: publish it behind a Cloudflare tunnel, or hand over a single HTML file. The live deck takes a third, covered at the end.
 
 ## Publishing
 
@@ -42,3 +42,7 @@ CSS, JS, both fonts, the Classic wallpaper and all 16 fragments are inlined as d
 Two-window follow mode works too, verified in Chrome and Firefox, where two windows of the same file share `localStorage` and its `storage` event. In Firefox both windows must open the same file path, since it gives each `file://` document its own storage origin. Safari refuses storage on `file://` altogether, so there the deck loses follow mode and last-slide memory: use Chrome, or the PDF.
 
 The portable build reuses the public build's fragment baking, so the two cannot drift, and `#stage`'s `data-portable` attribute is the only signal `deck.js` reads to drop the service worker.
+
+## The live deck
+
+<https://strascico-thesis.tintan.do/> serves the same `dist/`, built by `.github/workflows/pages.yaml` on every push to `main` that touches `presentation/` and uploaded to Cloudflare Pages with `wrangler pages deploy`. The workflow builds with `SITE_URL=https://strascico-thesis.tintan.do`, then copies in the two files under `deploy/pages/`: `_headers`, which gives Pages the response headers `nginx.conf` sets here, including the year-long `immutable` on `/assets/`, and `404.html`, without which Pages would answer an unknown path with the deck itself. `sw.js` scopes its caching rules to `/assets/` and `/`, so the deck belongs at the root of a host, as it is there, rather than under a path.
